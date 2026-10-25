@@ -147,9 +147,9 @@
     .btn-adicionar-carrinho-painel { background-color: #2F3E53; color: white; border: none; border-radius: 22px; padding: 12px 30px; font-size: 13px; font-weight: 800; cursor: pointer; align-self: flex-end; transition: opacity 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
     .btn-adicionar-carrinho-painel:hover { opacity: 0.9; }
 
-    /* TELA MEUS ITENS */
-    .meus-itens-box { background-color: white; border-radius: 24px; padding: 35px 25px 25px 25px; box-shadow: 0 6px 20px rgba(0,0,0,0.06); display: flex; flex-direction: column; gap: 20px; position: relative; min-height: 420px; margin-top: 15px; }
-    .meus-itens-box .loja-tab { background-color: #FFFFFF !important; color: #8ABCE5 !important; border-top: 4px solid var(--white); }
+        /* TELA MEUS ITENS */
+        .meus-itens-box { background-color: white; border-radius: 24px; padding: 50px 25px 25px 25px; box-shadow: 0 6px 20px rgba(0,0,0,0.06); display: flex; flex-direction: column; gap: 20px; position: relative; min-height: 420px; margin-top: 45px; }
+    .meus-itens-box .loja-tab { background-color: #FFFFFF !important; color: #8ABCE5 !important; border-top: 4px solid var(--white); top: -46px; left: 5%; position: absolute; padding: 10px 40px; font-size: 24px; font-weight: 800; border-radius: 20px 20px 0 0; z-index: 5; letter-spacing: 1px; }
     
     .meus-itens-search-bar-wrapper { background-color: #2B2B2B; border-radius: 18px; padding: 10px 20px; display: flex; align-items: center; gap: 15px; color: white; margin-bottom: 5px; position: relative; width: 100%; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
     .meus-itens-search-bar-wrapper svg { width: 20px; height: 20px; color: white; cursor: pointer; flex-shrink: 0; }
@@ -173,7 +173,7 @@
     .tag-gom { background-color: #FCE8E6; color: #A53725; margin-top: 4px; }
 
     /* ESTILOS DA TELA DE MEUS ENVIOS */
-    .meus-envios-box { background-color: white; border-radius: 24px; padding: 35px 25px; box-shadow: 0 6px 20px rgba(0,0,0,0.06); display: flex; flex-direction: column; gap: 20px; position: relative; min-height: 450px; max-width: 720px; margin: 0 auto; }
+    .meus-envios-box { background-color: white; border-radius: 24px; padding: 35px 25px; box-shadow: 0 6px 20px rgba(0,0,0,0.06); display: flex; flex-direction: column; gap: 20px; position: relative; min-height: 450px; max-width: 720px; margin: 50px auto 0; }
     .meus-envios-box .loja-tab { background-color: #FFFFFF !important; color: #8ABCE5 !important; border-top: 4px solid var(--white); top: -46px; left: 5%; position: absolute; padding: 10px 40px; font-size: 24px; font-weight: 800; border-radius: 20px 20px 0 0; z-index: 5; letter-spacing: 1px; }
     .meus-envios-titulo { font-size: 24px; font-weight: 900; color: var(--text-dark); margin-bottom: 5px; text-align: center; }
     
@@ -188,7 +188,7 @@
     .envio-card-rastreio a { color: var(--primary-blue); text-decoration: none; }
 
     /* ESTILOS DA TELA DE SOLICITAR ENVIO */
-    .solicitar-envio-box { background-color: white; border-radius: 24px; padding: 40px 30px; box-shadow: 0 6px 20px rgba(0,0,0,0.06); display: flex; flex-direction: column; align-items: center; text-align: center; max-width: 720px; margin: 0 auto; position: relative; }
+    .solicitar-envio-box { background-color: white; border-radius: 24px; padding: 40px 30px; box-shadow: 0 6px 20px rgba(0,0,0,0.06); display: flex; flex-direction: column; align-items: center; text-align: center; max-width: 720px; margin: 50px auto 0; position: relative; }
     .solicitar-envio-box .loja-tab { background-color: #FFFFFF !important; color: #8ABCE5 !important; border-top: 4px solid var(--white); top: -46px; left: 5%; position: absolute; padding: 10px 40px; font-size: 24px; font-weight: 800; border-radius: 20px 20px 0 0; z-index: 5; letter-spacing: 1px; }
     .solicitar-envio-titulo { font-size: 24px; font-weight: 900; color: var(--text-dark); margin-bottom: 10px; line-height: 1.2; }
     .solicitar-envio-desc { font-size: 11px; font-weight: 700; color: var(--text-dark); max-width: 580px; margin-bottom: 25px; line-height: 1.4; }
@@ -352,6 +352,8 @@
     .modal-content p { font-size: 11px; font-weight: 700; color: #000; margin-bottom: 25px; line-height: 1.4; }
     #btn-modal-ok, #btn-modal-envio-ok { background-color: #2F3E53; color: white; border: none; border-radius: 20px; padding: 10px 40px; font-size: 14px; font-weight: 700; cursor: pointer; transition: opacity 0.2s; }
     #btn-modal-ok:hover, #btn-modal-envio-ok:hover { opacity: 0.9; }
+
+    #painel-view-dashboard, #painel-view-meus-itens { display: flex; flex-direction: column; gap: 25px; width: 100%; }
 
     @media (max-width: 768px) { .dash-content { flex-direction: column; padding: 20px; gap: 30px; } .dash-envelope img { max-width: 300px; } .dash-header { padding: 0 20px; } .dash-logo { width: 170px; top: 15px; } .dash-nav { gap: 15px; font-size: 12px; } .painel-main-content { padding: 25px 20px; } }
   </style>
@@ -549,34 +551,59 @@
           </div>
         </div>
 
-        <div class="painel-right-col" id="painel-coluna-direita">
-          <h2 class="painel-welcome-title" id="painel-titulo-boas-vindas">Bem vinda de volta, Gudugo!</h2>
+                <div class="painel-right-col" id="painel-coluna-direita">
+          <!-- DASHBOARD PRINCIPAL -->
+          <div id="painel-view-dashboard">
+            <h2 class="painel-welcome-title" id="painel-titulo-boas-vindas">Bem vinda de volta, Gudugo!</h2>
 
-          <div class="resumo-cards-grid">
-            <div class="resumo-card">
-              <span class="label">Itens pendentes:</span>
-              <span class="valor" id="resumo-val-itens">R$ 0,00</span>
+            <div class="resumo-cards-grid">
+              <div class="resumo-card">
+                <span class="label">Itens pendentes:</span>
+                <span class="valor" id="resumo-val-itens">R$ 0,00</span>
+              </div>
+              <div class="resumo-card">
+                <span class="label">Fretes inter pendentes:</span>
+                <span class="valor" id="resumo-val-fretes">R$ 22,70</span>
+              </div>
+              <div class="resumo-card">
+                <span class="label">Taxas pendentes:</span>
+                <span class="valor" id="resumo-val-taxas">R$ 0,00</span>
+              </div>
             </div>
-            <div class="resumo-card">
-              <span class="label">Fretes inter pendentes:</span>
-              <span class="valor" id="resumo-val-fretes">R$ 22,70</span>
-            </div>
-            <div class="resumo-card">
-              <span class="label">Taxas pendentes:</span>
-              <span class="valor" id="resumo-val-taxas">R$ 0,00</span>
+            <div class="resumo-aviso">Cuidado com os prazos estabelecidos. Verifique no grupo da ceg ou abaixo nos itens pendentes.</div>
+
+            <div class="pendencias-box">
+              <div class="pendencias-header">
+                <h3>Pendências:</h3>
+                <button class="btn-selecionar-todos" id="btn-selecionar-selecao">Selecionar</button>
+              </div>
+
+              <div id="lista-pendencias-container" style="display: flex; flex-direction: column; gap: 12px;"></div>
+
+              <button class="btn-adicionar-carrinho-painel" id="btn-adicionar-carrinho-painel">Adicionar ao carrinho</button>
             </div>
           </div>
-          <div class="resumo-aviso">Cuidado com os prazos estabelecidos. Verifique no grupo da ceg ou abaixo nos itens pendentes.</div>
 
-          <div class="pendencias-box">
-            <div class="pendencias-header">
-              <h3>Pendências:</h3>
-              <button class="btn-selecionar-todos" id="btn-selecionar-selecao">Selecionar</button>
+                    <!-- VIEW MEUS ITENS -->
+                    <div id="painel-view-meus-itens" style="display: none;">
+                      <div style="display: flex; align-items: center; justify-content: flex-end; margin-bottom: 5px; min-height: 40px;">
+                        <button id="btn-voltar-meus-itens" style="background-color: #2F3E53; color: white; border: none; padding: 10px 22px; border-radius: 16px; font-weight: 800; font-size: 13px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: opacity 0.2s;">← Voltar ao Painel</button>
+                      </div>
+                      <div class="meus-itens-box">
+                        <div class="loja-tab">ITENS</div>
+              <div class="meus-itens-search-bar-wrapper">
+                <svg id="btn-meus-itens-filter-toggle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="cursor: pointer;"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" class="meus-itens-search-input" id="input-busca-meus-itens" placeholder="Pesquisar...">
+                <div class="meus-itens-filter-dropdown" id="meus-itens-filter-dropdown">
+                  <div class="meus-itens-filter-option" data-status="TODOS">Todos os Status</div>
+                  <div class="meus-itens-filter-option" data-status="No warehouse">No warehouse</div>
+                  <div class="meus-itens-filter-option" data-status="Enviado">Enviado</div>
+                </div>
+              </div>
+              <div class="meus-itens-subtitle">Clique no item para ver informações mais precisas.</div>
+              <div class="meus-itens-grid" id="grid-meus-itens-pagos"></div>
             </div>
-
-            <div id="lista-pendencias-container" style="display: flex; flex-direction: column; gap: 12px;"></div>
-
-            <button class="btn-adicionar-carrinho-painel" id="btn-adicionar-carrinho-painel">Adicionar ao carrinho</button>
           </div>
         </div>
       </div>
@@ -784,7 +811,7 @@
   <!-- CATÁLOGO DE LOJA -->
   <div class="loja-completa-container" id="loja-completa-container">
     <header class="dash-header">
-      <nav class="dash-nav"><a href="#" id="btn-voltar-home">MENU</a><a href="#">TERMOS</a><a href="#" class="btn-logout" style="color: #FFD1D1; margin-left: 10px;">SAIR</a></nav>
+      <nav class="dash-nav"><a href="#" id="btn-voltar-home">← VOLTAR</a><a href="#" class="btn-logout" style="color: #FFD1D1; margin-left: 10px;">SAIR</a></nav>
       <img src="jellyfish_client.png" alt="Logo" class="dash-logo">
       <div class="dash-cart"><svg id="btn-open-cart-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="cursor: pointer;"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg></div>
     </header>
@@ -810,7 +837,7 @@
   <!-- CARRINHO -->
   <div class="carrinho-container" id="carrinho-container">
     <header class="dash-header">
-      <nav class="dash-nav"><a href="#" id="btn-voltar-home-cart">MENU</a><a href="#">TERMOS</a><a href="#" class="btn-logout" style="color: #FFD1D1; margin-left: 10px;">SAIR</a></nav>
+      <nav class="dash-nav"><a href="#" id="btn-voltar-home-cart">← VOLTAR</a><a href="#" class="btn-logout" style="color: #FFD1D1; margin-left: 10px;">SAIR</a></nav>
       <img src="jellyfish_client.png" alt="Logo" class="dash-logo">
       <div class="dash-cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg></div>
     </header>
@@ -1082,13 +1109,20 @@
       sidebarOverlay.classList.remove('active');
     }
 
-    function abrirPainelControle(e) {
-      if(e) e.preventDefault();
-      esconderTodasAsTelas();
-      painelContainer.style.display = 'flex';
-      renderizarPainelPendencias();
-      window.scrollTo(0, 0);
-    }
+        function abrirPainelControle(e) {
+          if(e) e.preventDefault();
+          esconderTodasAsTelas();
+          painelContainer.style.display = 'flex';
+      
+          // Resetar views internas do painel
+          document.getElementById('painel-view-dashboard').style.display = 'flex';
+          document.getElementById('painel-view-meus-itens').style.display = 'none';
+          const colVendedoras = document.getElementById('painel-vendedoras-col');
+          if(colVendedoras) colVendedoras.style.display = 'flex';
+
+          renderizarPainelPendencias();
+          window.scrollTo(0, 0);
+        }
     document.getElementById('btn-open-painel-sidebar').addEventListener('click', abrirPainelControle);
 
     const voltarParaHome = (e) => { if(e) e.preventDefault(); esconderTodasAsTelas(); dashboardContainer.style.display = 'flex'; window.scrollTo(0, 0); };
@@ -1301,71 +1335,64 @@
       }
     });
 
-    // NAVEGAÇÃO "MEUS ITENS"
-    document.getElementById('menu-meus-itens').addEventListener('click', (e) => {
-      e.preventDefault();
-      const colDireita = document.getElementById('painel-coluna-direita');
-      const colVendedoras = document.getElementById('painel-vendedoras-col');
-      if(colVendedoras) colVendedoras.style.display = 'none';
+        // NAVEGAÇÃO "MEUS ITENS"
+        document.getElementById('menu-meus-itens').addEventListener('click', (e) => {
+          e.preventDefault();
+      
+          document.getElementById('painel-view-dashboard').style.display = 'none';
+          document.getElementById('painel-view-meus-itens').style.display = 'flex';
+      
+          const colVendedoras = document.getElementById('painel-vendedoras-col');
+          if(colVendedoras) colVendedoras.style.display = 'flex';
 
-      colDireita.innerHTML = `
-        <div class="meus-itens-box">
-          <div class="loja-tab">ITENS</div>
-          <div class="meus-itens-search-bar-wrapper">
-            <svg id="btn-meus-itens-filter-toggle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="cursor: pointer;"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <input type="text" class="meus-itens-search-input" id="input-busca-meus-itens" placeholder="Pesquisar...">
-            <div class="meus-itens-filter-dropdown" id="meus-itens-filter-dropdown">
-              <div class="meus-itens-filter-option" data-status="TODOS">Todos os Status</div>
-              <div class="meus-itens-filter-option" data-status="No warehouse">No warehouse</div>
-              <div class="meus-itens-filter-option" data-status="Enviado">Enviado</div>
-            </div>
-          </div>
-          <div class="meus-itens-subtitle">Clique no item para ver informações mais precisas.</div>
-          <div class="meus-itens-grid" id="grid-meus-itens-pagos"></div>
-        </div>
-      `;
-      renderizarMeusItensPagos(meusItensPagos);
-
-      const inputBuscaMeusItens = document.getElementById('input-busca-meus-itens');
-      const btnMeusItensFilterToggle = document.getElementById('btn-meus-itens-filter-toggle');
-      const meusItensFilterDropdown = document.getElementById('meus-itens-filter-dropdown');
-
-      if(inputBuscaMeusItens) {
-        inputBuscaMeusItens.addEventListener('input', (e) => {
-          const termo = e.target.value.toLowerCase();
-          const filtrados = meusItensPagos.filter(item => 
-            item.titulo.toLowerCase().includes(termo) || item.sub.toLowerCase().includes(termo)
-          );
-          renderizarMeusItensPagos(filtrados);
-        });
-      }
-
-      if(btnMeusItensFilterToggle && meusItensFilterDropdown) {
-        btnMeusItensFilterToggle.addEventListener('click', (e) => {
-          e.stopPropagation();
-          meusItensFilterDropdown.classList.toggle('active');
+          renderizarMeusItensPagos(meusItensPagos);
+          window.scrollTo(0, 0);
         });
 
-        document.addEventListener('click', () => {
-          meusItensFilterDropdown.classList.remove('active');
-        });
+    const btnVoltarMeusItens = document.getElementById('btn-voltar-meus-itens');
+    if(btnVoltarMeusItens) {
+      btnVoltarMeusItens.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        abrirPainelControle();
+      });
+    }
 
-        meusItensFilterDropdown.querySelectorAll('.meus-itens-filter-option').forEach(opt => {
-          opt.addEventListener('click', (e) => {
-            const status = e.target.getAttribute('data-status');
-            if(status === 'TODOS') {
-              renderizarMeusItensPagos(meusItensPagos);
-            } else {
-              const filtrados = meusItensPagos.filter(item => item.status.toLowerCase() === status.toLowerCase());
-              renderizarMeusItensPagos(filtrados);
-            }
-          });
-        });
-      }
+    const inputBuscaMeusItens = document.getElementById('input-busca-meus-itens');
+    const btnMeusItensFilterToggle = document.getElementById('btn-meus-itens-filter-toggle');
+    const meusItensFilterDropdown = document.getElementById('meus-itens-filter-dropdown');
 
-      window.scrollTo(0, 0);
-    });
+    if(inputBuscaMeusItens) {
+      inputBuscaMeusItens.addEventListener('input', (e) => {
+        const termo = e.target.value.toLowerCase();
+        const filtrados = meusItensPagos.filter(item => 
+          item.titulo.toLowerCase().includes(termo) || item.sub.toLowerCase().includes(termo)
+        );
+        renderizarMeusItensPagos(filtrados);
+      });
+    }
+
+    if(btnMeusItensFilterToggle && meusItensFilterDropdown) {
+      btnMeusItensFilterToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        meusItensFilterDropdown.classList.toggle('active');
+      });
+
+      document.addEventListener('click', () => {
+        if(meusItensFilterDropdown) meusItensFilterDropdown.classList.remove('active');
+      });
+
+      meusItensFilterDropdown.querySelectorAll('.meus-itens-filter-option').forEach(opt => {
+        opt.addEventListener('click', (e) => {
+          const status = e.target.getAttribute('data-status');
+          if(status === 'TODOS') {
+            renderizarMeusItensPagos(meusItensPagos);
+          } else {
+            const filtrados = meusItensPagos.filter(item => item.status.toLowerCase() === status.toLowerCase());
+            renderizarMeusItensPagos(filtrados);
+          }
+        });
+      });
+    }
 
     function renderizarMeusItensPagos(lista) {
       const grid = document.getElementById('grid-meus-itens-pagos');
@@ -1484,7 +1511,7 @@
     if(btnModalEnvioOk) {
       btnModalEnvioOk.addEventListener('click', () => {
         if(modalEnvioSucesso) modalEnvioSucesso.style.display = 'none';
-        location.reload();
+        abrirPainelControle();
       });
     }
 
@@ -1585,7 +1612,7 @@
     document.getElementById('menu-meus-emblemas').addEventListener('click', (e) => { e.preventDefault(); esconderTodasAsTelas(); subMeusEmblemas.style.display = 'flex'; window.scrollTo(0, 0); });
 
     document.querySelectorAll('.btn-voltar-painel').forEach(btn => {
-      btn.addEventListener('click', (e) => { e.preventDefault(); location.reload(); });
+      btn.addEventListener('click', (e) => { e.preventDefault(); abrirPainelControle(); });
     });
 
     const optPix = document.getElementById('opt-pix');
@@ -1685,6 +1712,9 @@
       });
     }
 
+    document.getElementById('btn-voltar-home').addEventListener('click', (e) => { e.preventDefault(); voltarParaHome(); });
+    document.getElementById('btn-voltar-home-cart').addEventListener('click', (e) => { e.preventDefault(); voltarParaHome(); });
+
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         esconderTodasAsTelas();
@@ -1752,7 +1782,6 @@
       });
     }
 
-    // REGISTO DE UTILIZADOR CORRIGIDO COM FIREBASE AUTH
     const registerForm = document.getElementById("register-form");
     const btnSubmitRegister = document.getElementById("btn-submit-register");
 
