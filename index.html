@@ -58,7 +58,8 @@
     .dash-nav a { color: white; text-decoration: none; transition: opacity 0.2s; cursor: pointer; }
     .dash-nav a:hover { opacity: 0.8; }
     .dash-logo { position: absolute; left: 50%; top: 12px; transform: translateX(-50%); width: 230px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.25)); z-index: 20; }
-    .dash-cart { display: flex; align-items: center; gap: 20px; }
+        .dash-cart { position: relative; display: flex; align-items: center; gap: 20px; }
+    .cart-badge { position: absolute; top: -5px; right: -8px; background-color: var(--error-red); color: white; font-size: 10px; font-weight: 800; min-width: 18px; height: 18px; border-radius: 50%; display: none; align-items: center; justify-content: center; border: 2px solid white; z-index: 30; }
     .dash-cart svg { width: 28px; height: 28px; color: white; cursor: pointer; }
 
     /* MENU LATERAL (SIDEBAR) */
@@ -82,11 +83,11 @@
     .sidebar-sair-btn { background-color: #2F3E53; color: white; text-align: center; padding: 12px; border-radius: 20px; font-weight: 700; font-size: 14px; text-decoration: none; box-shadow: 0 4px 10px rgba(0,0,0,0.15); transition: opacity 0.2s; }
     .sidebar-sair-btn:hover { opacity: 0.9; }
 
-    /* PAINEL DE CONTROLE DO CLIENTE */
+        /* PAINEL DE CONTROLE DO CLIENTE */
     .painel-container { display: none; min-height: 100vh; background-image: url('wallpaper_fundo_.jpg'); background-size: cover; background-position: center; background-attachment: fixed; flex-direction: column; overflow-x: hidden; animation: fadeIn 0.4s ease-out; }
-    .painel-main-content { max-width: 1100px; width: 92%; margin: 40px auto; background-color: #B4D6F1; border-radius: 35px; border: 4px solid white; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: flex; gap: 40px; flex-wrap: wrap; position: relative; }
+    .painel-main-content { max-width: 1100px; width: 92%; margin: 40px auto; background-color: #B4D6F1; border-radius: 35px; border: 4px solid white; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: flex; gap: 40px; flex-wrap: wrap; position: relative; align-items: flex-start; }
     
-    .painel-left-col { width: 300px; display: flex; flex-direction: column; gap: 20px; }
+    .painel-left-col { width: 300px; display: flex; flex-direction: column; gap: 20px; flex-shrink: 0; }
     .painel-user-box { background-color: white; border-radius: 24px; padding: 20px; text-align: center; box-shadow: 0 6px 15px rgba(0,0,0,0.06); }
     .painel-user-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin: 0 auto 10px; border: 3px solid var(--primary-blue); display: block; }
     .painel-user-name { font-size: 18px; font-weight: 900; color: var(--text-dark); }
@@ -96,7 +97,7 @@
     .painel-user-btn { background-color: #2F3E53; color: white; border: none; border-radius: 14px; padding: 6px 0; font-size: 11px; font-weight: 700; cursor: pointer; transition: opacity 0.2s; }
     .painel-user-btn:hover { opacity: 0.9; }
 
-    .vendedora-tab { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; border-radius: 20px; cursor: pointer; font-weight: 800; font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: all 0.2s; background-color: white; color: var(--text-dark); }
+    .vendedora-tab { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; border-radius: 20px; cursor: pointer; font-weight: 800; font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: all 0.2s; background-color: white; color: var(--text-dark); min-height: 56px; }
     .vendedora-tab img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
     .vendedora-radio { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--text-light); display: flex; align-items: center; justify-content: center; background: white; }
 
@@ -147,8 +148,7 @@
     .btn-adicionar-carrinho-painel { background-color: #2F3E53; color: white; border: none; border-radius: 22px; padding: 12px 30px; font-size: 13px; font-weight: 800; cursor: pointer; align-self: flex-end; transition: opacity 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
     .btn-adicionar-carrinho-painel:hover { opacity: 0.9; }
 
-        /* TELA MEUS ITENS */
-        .meus-itens-box { background-color: white; border-radius: 24px; padding: 50px 25px 25px 25px; box-shadow: 0 6px 20px rgba(0,0,0,0.06); display: flex; flex-direction: column; gap: 20px; position: relative; min-height: 420px; margin-top: 45px; }
+            .meus-itens-box { background-color: white; border-radius: 24px; padding: 50px 25px 25px 25px; box-shadow: 0 6px 20px rgba(0,0,0,0.06); display: flex; flex-direction: column; gap: 20px; position: relative; min-height: 420px; margin-top: 20px; }
     .meus-itens-box .loja-tab { background-color: #FFFFFF !important; color: #8ABCE5 !important; border-top: 4px solid var(--white); top: -46px; left: 5%; position: absolute; padding: 10px 40px; font-size: 24px; font-weight: 800; border-radius: 20px 20px 0 0; z-index: 5; letter-spacing: 1px; }
     
     .meus-itens-search-bar-wrapper { background-color: #2B2B2B; border-radius: 18px; padding: 10px 20px; display: flex; align-items: center; gap: 15px; color: white; margin-bottom: 5px; position: relative; width: 100%; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
@@ -445,8 +445,9 @@
         <a href="#" class="btn-logout" style="color: #FFD1D1; margin-left: 10px;">SAIR</a>
       </nav>
       <img src="jellyfish_client.png" alt="Jellyfish Logo" class="dash-logo">
-      <div class="dash-cart">
+            <div class="dash-cart">
         <svg id="btn-open-cart-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="cursor: pointer;"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+        <span class="cart-badge badge-carrinho">0</span>
       </div>
     </header>
 
@@ -493,8 +494,9 @@
         <a href="#" class="btn-logout" style="color: #FFD1D1; margin-left: 10px;">SAIR</a>
       </nav>
       <img src="jellyfish_client.png" alt="Jellyfish Logo" class="dash-logo">
-      <div class="dash-cart">
+            <div class="dash-cart">
         <svg id="btn-open-cart-painel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="cursor: pointer;"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+        <span class="cart-badge badge-carrinho">0</span>
       </div>
     </header>
 
@@ -584,13 +586,13 @@
             </div>
           </div>
 
-                    <!-- VIEW MEUS ITENS -->
-                    <div id="painel-view-meus-itens" style="display: none;">
-                      <div style="display: flex; align-items: center; justify-content: flex-end; margin-bottom: 5px; min-height: 40px;">
-                        <button id="btn-voltar-meus-itens" style="background-color: #2F3E53; color: white; border: none; padding: 10px 22px; border-radius: 16px; font-weight: 800; font-size: 13px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: opacity 0.2s;">← Voltar ao Painel</button>
-                      </div>
-                      <div class="meus-itens-box">
-                        <div class="loja-tab">ITENS</div>
+                              <!-- VIEW MEUS ITENS -->
+          <div id="painel-view-meus-itens" style="display: none; flex-direction: column; width: 100%;">
+            <div style="display: flex; align-items: center; justify-content: flex-end; margin-bottom: 25px;">
+              <button id="btn-voltar-meus-itens" style="background-color: #2F3E53; color: white; border: none; padding: 10px 22px; border-radius: 16px; font-weight: 800; font-size: 13px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: opacity 0.2s;">← Voltar ao Painel</button>
+            </div>
+            <div class="meus-itens-box">
+              <div class="loja-tab">ITENS</div>
               <div class="meus-itens-search-bar-wrapper">
                 <svg id="btn-meus-itens-filter-toggle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="cursor: pointer;"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
@@ -813,7 +815,10 @@
     <header class="dash-header">
       <nav class="dash-nav"><a href="#" id="btn-voltar-home">← VOLTAR</a><a href="#" class="btn-logout" style="color: #FFD1D1; margin-left: 10px;">SAIR</a></nav>
       <img src="jellyfish_client.png" alt="Logo" class="dash-logo">
-      <div class="dash-cart"><svg id="btn-open-cart-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="cursor: pointer;"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg></div>
+      <div class="dash-cart">
+        <svg id="btn-open-cart-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="cursor: pointer;"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+        <span class="cart-badge badge-carrinho">0</span>
+      </div>
     </header>
     <main class="loja-main-content">
       <div class="loja-catalog-box">
@@ -912,13 +917,41 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const auth = getAuth(app);
+        const auth = getAuth(app);
+
+    // PERSISTÊNCIA DO CARRINHO
+    function salvarCarrinho() {
+      localStorage.setItem('jelly_cart', JSON.stringify(carrinhoItens));
+      atualizarBadgeCarrinho();
+    }
+
+    function carregarCarrinho() {
+      const saved = localStorage.getItem('jelly_cart');
+      if (saved) {
+        carrinhoItens = JSON.parse(saved);
+      }
+      atualizarBadgeCarrinho();
+    }
+
+    function atualizarBadgeCarrinho() {
+      const badges = document.querySelectorAll('.badge-carrinho');
+      const count = carrinhoItens.length;
+      badges.forEach(b => {
+        if (count > 0) {
+          b.innerText = count;
+          b.style.display = 'flex';
+        } else {
+          b.style.display = 'none';
+        }
+      });
+    }
 
     setPersistence(auth, browserLocalPersistence).catch((error) => {
       console.error("Erro na persistência de auth:", error);
     });
 
     let carrinhoItens = [];
+    carregarCarrinho();
     let meusItensPagos = [
       { id: 'mi1', titulo: 'YUNJIN CRAZY JP', sub: 'M HOT CUT (ANNIVERSARY)', foto: 'image_3595a6_2.jpg', status: 'No warehouse', gom: 'GOM Malve', ceg: 'Pedidos individuais', caixa: 'Indefinida' }
     ];
@@ -948,7 +981,7 @@
       ]
     };
 
-    function inicializarLoja() {
+        function inicializarLoja() {
       const track1 = document.getElementById('loja-carousel-1');
       const track2 = document.getElementById('loja-carousel-2');
       const catalogGrid = document.getElementById('loja-catalog-grid');
@@ -965,9 +998,6 @@
                 <img src="MOLDE_ITENS_A_VENDA.png" class="loja-mold-img">
                 <div class="loja-price"><span class="moeda">R$</span><span class="inteiro">${pVal[0]}</span><span class="centavos">,${pVal[1]}</span></div>
                 <div class="loja-title"><div class="nome">${prod.titulo}</div><div class="sub">${prod.sub}</div></div>
-                <div class="btn-add-cart-float" onclick="adicionarAoCarrinhoLoja('${prod.id}')">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                </div>
               </div>
             </div>`;
           track1.innerHTML += htmlItem;
@@ -1005,8 +1035,9 @@
           fotoUrl: prod.foto,
           tagClass: "cart-tag-staff",
           tagText: "Loja",
-          tagSub: prod.grupo
+                    tagSub: prod.grupo
         });
+        salvarCarrinho();
         alert(`${prod.titulo} foi adicionado ao carrinho!`);
       }
     };
@@ -1251,7 +1282,7 @@
               tagText: itemObj.nome.includes('FRETE') ? "Frete INTER" : "Pendente",
               tagSub: vend.toUpperCase()
             });
-            itemObj.status = 'No carrinho';
+                        itemObj.status = 'No carrinho';
           }
         });
 
@@ -1259,6 +1290,7 @@
         const btnSel = document.getElementById('btn-selecionar-selecao');
         if(btnSel) btnSel.classList.remove('ativo');
         renderizarPainelPendencias();
+        salvarCarrinho();
         alert("Itens selecionados adicionados ao carrinho com sucesso!");
         abrirCarrinho();
       });
@@ -1662,8 +1694,9 @@
             itemOriginal.status = 'Pendente';
           }
         }
-      }
+            }
       carrinhoItens.splice(index, 1);
+      salvarCarrinho();
       renderizarCarrinho();
       renderizarPainelPendencias();
     };
@@ -1706,7 +1739,8 @@
           });
         });
 
-        carrinhoItens = [];
+                carrinhoItens = [];
+        salvarCarrinho();
         renderizarPainelPendencias();
         voltarParaHome();
       });
