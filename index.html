@@ -1,0 +1,1757 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Jellyfish Client | Painel de Controle</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+
+  <style>
+    @font-face { font-family: 'Analogist'; src: url('Analogist.woff2') format('woff2'), url('Analogist.ttf') format('truetype'); font-weight: normal; font-style: normal; }
+    :root { --primary-blue: #8ABCE5; --text-dark: #2F3E53; --text-light: #94A6B8; --border-color: #DDE5ED; --white: #FFFFFF; --error-red: #E74C3C; --malve-red: #8B0000; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+    body { margin: 0; background-color: #f4f4f4; overflow-x: hidden; }
+    
+    .auth-container { display: none; background-image: url('Concha_Magica_em_Correntes_Aquaticas.png'); background-size: cover; background-position: center; background-attachment: fixed; min-height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: 9999; justify-content: center; align-items: center; }
+    .app-wrapper { width: 100%; height: 100vh; max-width: 480px; display: flex; flex-direction: column; justify-content: space-between; }
+    .logo-area { flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px; }
+    .logo-area img { width: 280px; max-width: 90%; object-fit: contain; filter: drop-shadow(0 4px 15px rgba(255, 255, 255, 0.8)); }
+    .bottom-sheet { background-color: var(--white); border-radius: 36px 36px 0 0; padding: 40px 30px 45px 30px; box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.15); width: 100%; max-height: 85vh; overflow-y: auto; }
+    .bottom-sheet::-webkit-scrollbar { display: none; }
+    .view-section { display: none; animation: fadeIn 0.4s ease-out; }
+    .view-section.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    h1 { font-size: 26px; font-weight: 600; color: var(--text-dark); margin-bottom: 12px; letter-spacing: -0.5px; }
+    p.subtitle { font-size: 14px; font-weight: 400; color: var(--text-light); line-height: 1.5; margin-bottom: 30px; }
+    .input-box { position: relative; margin-bottom: 16px; }
+    .input-box input { width: 100%; height: 56px; background: transparent; border: 1px solid var(--border-color); border-radius: 18px; padding: 0 45px 0 50px; font-size: 15px; color: var(--text-dark); outline: none; transition: all 0.3s ease; }
+    .input-box input::placeholder { color: var(--text-light); font-weight: 400; }
+    .input-box input:focus { border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(138, 188, 229, 0.15); }
+    .icon-left { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--text-light); width: 20px; height: 20px; pointer-events: none; }
+    .icon-right { position: absolute; right: 18px; top: 50%; transform: translateY(-50%); color: var(--text-light); width: 20px; height: 20px; cursor: pointer; background: none; border: none; display: flex; align-items: center; justify-content: center; }
+    .form-options { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; margin-bottom: 30px; }
+    .checkbox-container { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+    .checkbox-container input { appearance: none; width: 18px; height: 18px; border: 1px solid var(--border-color); border-radius: 4px; outline: none; cursor: pointer; position: relative; background: transparent; }
+    .checkbox-container input:checked { background-color: var(--primary-blue); border-color: var(--primary-blue); }
+    .checkbox-container input:checked::after { content: '✓'; position: absolute; color: white; font-size: 12px; font-weight: bold; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+    .checkbox-container span { font-size: 13px; color: var(--text-light); }
+    .forgot-password { font-size: 13px; color: var(--primary-blue); text-decoration: none; font-weight: 500; }
+    .btn-primary { width: 100%; height: 56px; background-color: var(--primary-blue); color: var(--white); border: none; border-radius: 28px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: opacity 0.2s; }
+    .btn-primary:active { opacity: 0.8; }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-secondary { width: 100%; height: 56px; background-color: transparent; color: var(--text-light); border: 1px solid var(--border-color); border-radius: 28px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-top: 12px; }
+    .btn-secondary:active { background-color: #F8FBFE; color: var(--primary-blue); border-color: var(--primary-blue); }
+    .btn-outline-blue { color: var(--primary-blue); border-color: var(--border-color); }
+    .divider { display: flex; align-items: center; text-align: center; color: var(--text-light); font-size: 12px; margin: 25px 0; }
+    .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--border-color); }
+    .divider::before { margin-right: 15px; } .divider::after { margin-left: 15px; }
+    .error-msg { color: var(--error-red); font-size: 13px; margin-top: -10px; margin-bottom: 15px; display: none; text-align: center; font-weight: 500; }
+
+    /* DASHBOARD */
+    .dashboard-container { display: none; min-height: 100vh; background-image: url('wallpaper_fundo_.jpg'); background-size: cover; background-position: center; background-attachment: fixed; flex-direction: column; overflow-x: hidden; }
+    .dash-header { background-color: var(--primary-blue); height: 70px; display: flex; justify-content: space-between; align-items: center; padding: 0 40px; color: white; border-radius: 0 0 20px 20px; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.1); z-index: 10; }
+    .dash-nav { display: flex; gap: 20px; font-weight: 600; font-size: 14px; letter-spacing: 1px; align-items: center; }
+    .dash-nav a { color: white; text-decoration: none; transition: opacity 0.2s; cursor: pointer; }
+    .dash-nav a:hover { opacity: 0.8; }
+    .dash-logo { position: absolute; left: 50%; top: 12px; transform: translateX(-50%); width: 230px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.25)); z-index: 20; }
+    .dash-cart { display: flex; align-items: center; gap: 20px; }
+    .dash-cart svg { width: 28px; height: 28px; color: white; cursor: pointer; }
+
+    /* MENU LATERAL (SIDEBAR) */
+    .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); z-index: 100; opacity: 0; transition: opacity 0.3s ease; }
+    .sidebar-overlay.active { display: block; opacity: 1; }
+    .sidebar-menu { position: fixed; top: 0; left: -320px; width: 300px; height: 100%; background-color: #B4D6F1; z-index: 101; box-shadow: 5px 0 25px rgba(0,0,0,0.15); transition: left 0.35s cubic-bezier(0.77, 0, 0.175, 1); display: flex; flex-direction: column; justify-content: space-between; padding: 30px 25px; border-right: 3px solid white; }
+    .sidebar-menu.active { left: 0; }
+    .sidebar-top-content { display: flex; flex-direction: column; gap: 25px; }
+    .sidebar-menu-title { font-weight: 700; font-size: 14px; color: white; letter-spacing: 1px; cursor: pointer; }
+    
+    .sidebar-user-card { background-color: rgba(255, 255, 255, 0.55); border-radius: 20px; padding: 12px 15px; display: flex; align-items: center; gap: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); cursor: pointer; transition: transform 0.2s; }
+    .sidebar-user-card:hover { transform: scale(1.02); }
+    .sidebar-user-avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; background-color: white; border: 2px solid white; }
+    .sidebar-user-info { display: flex; flex-direction: column; overflow: hidden; }
+    .sidebar-user-name { font-size: 14px; font-weight: 800; color: var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sidebar-user-handle { font-size: 11px; font-weight: 600; color: var(--text-light); }
+
+    .sidebar-nav-links { display: flex; flex-direction: column; gap: 18px; margin-top: 10px; }
+    .sidebar-nav-links a { color: var(--text-dark); font-size: 14px; font-weight: 800; text-decoration: none; letter-spacing: 0.5px; transition: color 0.2s; cursor: pointer; }
+    .sidebar-nav-links a:hover { color: white; }
+    .sidebar-sair-btn { background-color: #2F3E53; color: white; text-align: center; padding: 12px; border-radius: 20px; font-weight: 700; font-size: 14px; text-decoration: none; box-shadow: 0 4px 10px rgba(0,0,0,0.15); transition: opacity 0.2s; }
+    .sidebar-sair-btn:hover { opacity: 0.9; }
+
+    /* PAINEL DE CONTROLE DO CLIENTE */
+    .painel-container { display: none; min-height: 100vh; background-image: url('wallpaper_fundo_.jpg'); background-size: cover; background-position: center; background-attachment: fixed; flex-direction: column; overflow-x: hidden; animation: fadeIn 0.4s ease-out; }
+    .painel-main-content { max-width: 1100px; width: 92%; margin: 40px auto; background-color: #B4D6F1; border-radius: 35px; border: 4px solid white; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: flex; gap: 40px; flex-wrap: wrap; position: relative; }
+    
+    .painel-left-col { width: 300px; display: flex; flex-direction: column; gap: 20px; }
+    .painel-user-box { background-color: white; border-radius: 24px; padding: 20px; text-align: center; box-shadow: 0 6px 15px rgba(0,0,0,0.06); }
+    .painel-user-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin: 0 auto 10px; border: 3px solid var(--primary-blue); display: block; }
+    .painel-user-name { font-size: 18px; font-weight: 900; color: var(--text-dark); }
+    .painel-user-handle { font-size: 12px; font-weight: 600; color: var(--text-light); margin-bottom: 15px; }
+    
+    .painel-user-btns { display: flex; flex-direction: column; gap: 8px; }
+    .painel-user-btn { background-color: #2F3E53; color: white; border: none; border-radius: 14px; padding: 6px 0; font-size: 11px; font-weight: 700; cursor: pointer; transition: opacity 0.2s; }
+    .painel-user-btn:hover { opacity: 0.9; }
+
+    .vendedora-tab { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; border-radius: 20px; cursor: pointer; font-weight: 800; font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: all 0.2s; background-color: white; color: var(--text-dark); }
+    .vendedora-tab img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+    .vendedora-radio { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--text-light); display: flex; align-items: center; justify-content: center; background: white; }
+
+    .vendedora-tab.malve-ativo { background-color: var(--malve-red) !important; color: white !important; }
+    .vendedora-tab.malve-ativo .vendedora-radio { border-color: white; }
+    .vendedora-tab.malve-ativo .vendedora-radio::after { content: ''; width: 8px; height: 8px; background: white; border-radius: 50%; display: block; }
+
+    .vendedora-tab.lili-ativo { background-color: var(--primary-blue) !important; color: white !important; }
+    .vendedora-tab.lili-ativo .vendedora-radio { border-color: white; background-color: white; }
+    .vendedora-tab.lili-ativo .vendedora-radio::after { content: ''; width: 8px; height: 8px; background: var(--primary-blue); border-radius: 50%; display: block; }
+
+    .painel-menu-list { background-color: white; border-radius: 24px; padding: 20px; display: flex; flex-direction: column; gap: 15px; box-shadow: 0 6px 15px rgba(0,0,0,0.06); }
+    .painel-menu-item { text-decoration: none; display: block; cursor: pointer; }
+    .painel-menu-item .titulo-menu { font-size: 15px; font-weight: 900; color: var(--text-dark); }
+    .painel-menu-item .sub-menu { font-size: 10px; font-weight: 600; color: var(--text-light); line-height: 1.3; margin-top: 2px; }
+    .painel-menu-item.highlight .titulo-menu { color: #E67E22; }
+
+    .painel-right-col { flex: 1; min-width: 320px; display: flex; flex-direction: column; gap: 25px; }
+    .painel-welcome-title { font-size: 28px; font-weight: 900; color: var(--text-dark); letter-spacing: -0.5px; }
+
+    .resumo-cards-grid { display: flex; gap: 15px; flex-wrap: wrap; }
+    .resumo-card { background-color: white; border-radius: 20px; padding: 18px 20px; flex: 1; min-width: 130px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); display: flex; flex-direction: column; gap: 4px; }
+    .resumo-card .label { font-size: 11px; font-weight: 700; color: var(--text-dark); }
+    .resumo-card .valor { font-size: 22px; font-weight: 900; color: var(--text-dark); }
+    .resumo-card .valor.tem-pendencia { color: #E74C3C !important; }
+    .resumo-aviso { font-size: 10px; font-weight: 600; color: var(--text-dark); margin-top: -10px; font-style: italic; }
+
+    .pendencias-box { background-color: white; border-radius: 24px; padding: 25px; box-shadow: 0 6px 20px rgba(0,0,0,0.06); display: flex; flex-direction: column; gap: 20px; }
+    .pendencias-header { display: flex; justify-content: space-between; align-items: center; }
+    .pendencias-header h3 { font-size: 18px; font-weight: 900; color: var(--text-dark); }
+    .btn-selecionar-todos { background-color: #2F3E53; color: white; border: none; border-radius: 14px; padding: 6px 20px; font-size: 11px; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+    .btn-selecionar-todos.ativo { background-color: var(--primary-blue); }
+
+    .pendencia-item-card { border: 1px solid var(--border-color); border-radius: 18px; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; gap: 15px; background-color: #FAFCFF; }
+    .pendencia-info-left { display: flex; align-items: center; gap: 15px; }
+    .pendencia-checkbox { width: 20px; height: 20px; accent-color: var(--primary-blue); cursor: pointer; display: none; }
+    .pendencia-img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; }
+    .pendencia-details .nome-item { font-size: 12px; font-weight: 900; color: var(--text-dark); text-transform: uppercase; }
+    .pendencia-details .sub-item { font-size: 10px; font-weight: 700; color: var(--text-light); }
+    .pendencia-details .valor-tag { font-size: 9px; font-weight: 800; background-color: #E2ECD8; color: #3B5B24; padding: 2px 8px; border-radius: 8px; display: inline-block; margin-top: 3px; }
+
+    .pendencia-info-right { text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+    .pendencia-prazo { font-size: 9px; font-weight: 800; color: var(--text-light); }
+    .pendencia-status-tag { background-color: #FCE8E6; color: #E74C3C; font-size: 9px; font-weight: 800; padding: 2px 10px; border-radius: 10px; }
+    .pendencia-status-tag.no-carrinho { background-color: #FFF3CD; color: #856404; }
+    .pendencia-preco { font-size: 16px; font-weight: 900; color: var(--text-dark); margin-top: 2px; }
+
+    .btn-adicionar-carrinho-painel { background-color: #2F3E53; color: white; border: none; border-radius: 22px; padding: 12px 30px; font-size: 13px; font-weight: 800; cursor: pointer; align-self: flex-end; transition: opacity 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    .btn-adicionar-carrinho-painel:hover { opacity: 0.9; }
+
+    /* TELA MEUS ITENS */
+    .meus-itens-box { background-color: white; border-radius: 24px; padding: 35px 25px 25px 25px; box-shadow: 0 6px 20px rgba(0,0,0,0.06); display: flex; flex-direction: column; gap: 20px; position: relative; min-height: 420px; margin-top: 15px; }
+    .meus-itens-box .loja-tab { background-color: #FFFFFF !important; color: #8ABCE5 !important; border-top: 4px solid var(--white); }
+    
+    .meus-itens-search-bar-wrapper { background-color: #2B2B2B; border-radius: 18px; padding: 10px 20px; display: flex; align-items: center; gap: 15px; color: white; margin-bottom: 5px; position: relative; width: 100%; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+    .meus-itens-search-bar-wrapper svg { width: 20px; height: 20px; color: white; cursor: pointer; flex-shrink: 0; }
+    .meus-itens-search-input { flex: 1; background: transparent; border: none; outline: none; color: white; font-size: 14px; }
+    .meus-itens-search-input::placeholder { color: #aaa; }
+    
+    .meus-itens-filter-dropdown { position: absolute; top: 55px; left: 15px; background-color: #2b2b2b; border-radius: 14px; padding: 10px 0; width: 220px; box-shadow: 0 8px 20px rgba(0,0,0,0.3); display: none; z-index: 30; }
+    .meus-itens-filter-dropdown.active { display: block; }
+    .meus-itens-filter-option { padding: 10px 20px; color: white; font-size: 13px; cursor: pointer; transition: background 0.2s; }
+    .meus-itens-filter-option:hover { background-color: #3e3e3e; color: var(--primary-blue); }
+
+    .meus-itens-subtitle { font-size: 11px; font-weight: 600; color: var(--text-dark); text-align: center; margin-bottom: 10px; }
+    
+    .meus-itens-grid { display: flex; gap: 20px; flex-wrap: wrap; }
+    .meu-item-card { width: 150px; background: #FAFCFF; border: 1px solid var(--border-color); border-radius: 18px; padding: 12px; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.04); cursor: pointer; transition: transform 0.2s; }
+    .meu-item-card:hover { transform: scale(1.03); }
+    .meu-item-foto { width: 100%; height: 160px; object-fit: cover; border-radius: 12px; margin-bottom: 8px; }
+    .meu-item-nome { font-size: 11px; font-weight: 900; color: var(--text-dark); text-transform: uppercase; line-height: 1.2; margin-bottom: 4px; }
+    .meu-item-tag { font-size: 8px; font-weight: 800; padding: 3px 8px; border-radius: 8px; display: inline-block; margin-top: 3px; }
+    .tag-warehouse { background-color: #FFF3CD; color: #856404; }
+    .tag-gom { background-color: #FCE8E6; color: #A53725; margin-top: 4px; }
+
+    /* ESTILOS DA TELA DE MEUS ENVIOS */
+    .meus-envios-box { background-color: white; border-radius: 24px; padding: 35px 25px; box-shadow: 0 6px 20px rgba(0,0,0,0.06); display: flex; flex-direction: column; gap: 20px; position: relative; min-height: 450px; max-width: 720px; margin: 0 auto; }
+    .meus-envios-box .loja-tab { background-color: #FFFFFF !important; color: #8ABCE5 !important; border-top: 4px solid var(--white); top: -46px; left: 5%; position: absolute; padding: 10px 40px; font-size: 24px; font-weight: 800; border-radius: 20px 20px 0 0; z-index: 5; letter-spacing: 1px; }
+    .meus-envios-titulo { font-size: 24px; font-weight: 900; color: var(--text-dark); margin-bottom: 5px; text-align: center; }
+    
+    .envio-card-item { background-color: #F8FBFE; border: 1px solid var(--border-color); border-radius: 18px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; gap: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+    .envio-card-left { display: flex; align-items: center; gap: 15px; }
+    .envio-card-foto { width: 56px; height: 56px; border-radius: 12px; object-fit: cover; }
+    .envio-card-info { display: flex; flex-direction: column; gap: 3px; }
+    .envio-card-titulo { font-size: 14px; font-weight: 900; color: var(--text-dark); }
+    .envio-card-status { font-size: 11px; font-weight: 700; color: var(--text-light); display: flex; align-items: center; gap: 6px; }
+    .envio-status-bolinha { width: 8px; height: 8px; background-color: #2ECC71; border-radius: 50%; display: inline-block; }
+    .envio-card-rastreio { font-size: 11px; font-weight: 800; color: var(--text-dark); }
+    .envio-card-rastreio a { color: var(--primary-blue); text-decoration: none; }
+
+    /* ESTILOS DA TELA DE SOLICITAR ENVIO */
+    .solicitar-envio-box { background-color: white; border-radius: 24px; padding: 40px 30px; box-shadow: 0 6px 20px rgba(0,0,0,0.06); display: flex; flex-direction: column; align-items: center; text-align: center; max-width: 720px; margin: 0 auto; position: relative; }
+    .solicitar-envio-box .loja-tab { background-color: #FFFFFF !important; color: #8ABCE5 !important; border-top: 4px solid var(--white); top: -46px; left: 5%; position: absolute; padding: 10px 40px; font-size: 24px; font-weight: 800; border-radius: 20px 20px 0 0; z-index: 5; letter-spacing: 1px; }
+    .solicitar-envio-titulo { font-size: 24px; font-weight: 900; color: var(--text-dark); margin-bottom: 10px; line-height: 1.2; }
+    .solicitar-envio-desc { font-size: 11px; font-weight: 700; color: var(--text-dark); max-width: 580px; margin-bottom: 25px; line-height: 1.4; }
+    
+    .btn-anexar-proof { width: 100%; max-width: 520px; height: 50px; background-color: #F8FBFE; border: 1px solid var(--border-color); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; color: var(--text-dark); cursor: pointer; transition: background 0.2s; margin-bottom: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); position: relative; padding: 0 20px; }
+    .btn-anexar-proof:hover { background-color: #EFEFF1; }
+    .btn-anexar-proof-content { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
+    .proof-asterisco { color: var(--error-red); font-size: 14px; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); }
+    
+    .proof-sub-instrucao { font-size: 10px; font-weight: 600; color: var(--text-light); margin-bottom: 25px; }
+    .proof-sub-instrucao a { color: var(--primary-blue); text-decoration: none; font-weight: 700; }
+
+    .dados-envio-titulo { font-size: 18px; font-weight: 900; color: var(--text-dark); margin-bottom: 4px; }
+    .dados-envio-sub { font-size: 10px; font-weight: 700; color: var(--text-light); margin-bottom: 20px; }
+
+    .envio-form-grid { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; text-align: left; margin-bottom: 20px; }
+    .envio-input-group { display: flex; flex-direction: column; gap: 5px; }
+    .envio-input-group.full { grid-column: span 2; }
+    .envio-input-group label { font-size: 11px; font-weight: 800; color: var(--text-dark); display: flex; justify-content: space-between; }
+    .envio-input-group label span { color: var(--error-red); }
+    .envio-input-group input, .envio-input-group select { width: 100%; height: 44px; background-color: #F8FBFE; border: 1px solid var(--border-color); border-radius: 14px; padding: 0 15px; font-size: 13px; color: var(--text-dark); outline: none; }
+    .envio-input-group select { cursor: pointer; }
+
+    .envio-termos-box { width: 100%; display: flex; flex-direction: column; gap: 12px; text-align: left; margin-bottom: 25px; }
+    .envio-termo-item { display: flex; align-items: flex-start; gap: 10px; font-size: 10px; font-weight: 700; color: var(--text-dark); cursor: pointer; line-height: 1.4; }
+    .envio-termo-item input { accent-color: var(--primary-blue); width: 16px; height: 16px; margin-top: 1px; flex-shrink: 0; cursor: pointer; }
+
+    .btn-enviar-formulario { background-color: #2F3E53; color: white; border: none; border-radius: 22px; padding: 12px 40px; font-size: 13px; font-weight: 800; cursor: pointer; transition: opacity 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.15); margin: 0 auto; display: block; }
+    .btn-enviar-formulario:hover { opacity: 0.9; }
+
+    /* MODAL DE DETALHES DO ITEM */
+    .detalhes-item-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); z-index: 3000; align-items: center; justify-content: center; animation: fadeIn 0.3s; }
+    .detalhes-item-modal { background-color: #B4D6F1; border-radius: 30px; border: 4px solid white; padding: 40px 50px; width: 92%; max-width: 620px; box-shadow: 0 10px 40px rgba(0,0,0,0.25); display: flex; align-items: center; gap: 40px; position: relative; }
+    
+    .detalhes-card-preview { width: 190px; background: #FAFCFF; border: 1px solid var(--border-color); border-radius: 20px; padding: 14px; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: 0 6px 16px rgba(0,0,0,0.08); }
+    .detalhes-card-foto { width: 100%; height: 210px; object-fit: cover; border-radius: 14px; margin-bottom: 10px; }
+    .detalhes-card-nome { font-size: 12px; font-weight: 900; color: var(--text-dark); text-transform: uppercase; line-height: 1.2; margin-bottom: 3px; }
+    .detalhes-card-sub { font-size: 8px; font-weight: 700; color: var(--text-light); }
+
+    .detalhes-info-col { flex: 1; display: flex; flex-direction: column; gap: 14px; }
+    .detalhes-campo-grupo { display: flex; align-items: center; gap: 12px; }
+    .detalhes-campo-grupo label { font-size: 14px; font-weight: 900; color: var(--text-dark); width: 65px; }
+    .detalhes-campo-valor { flex: 1; background-color: white; border-radius: 16px; padding: 8px 16px; font-size: 13px; font-weight: 700; color: var(--text-dark); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+
+    .btn-voltar-detalhes { position: absolute; bottom: 20px; right: 40px; background-color: #2F3E53; color: white; border: none; border-radius: 20px; padding: 8px 30px; font-size: 13px; font-weight: 800; cursor: pointer; transition: opacity 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+    .btn-voltar-detalhes:hover { opacity: 0.9; }
+
+    /* MODAIS GERAIS */
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 2000; align-items: center; justify-content: center; animation: fadeIn 0.3s; }
+    .modal-box { background-color: #B4D6F1; border-radius: 30px; border: 4px solid white; padding: 35px; width: 90%; max-width: 440px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+    .modal-box h2 { font-size: 22px; font-weight: 900; color: var(--text-dark); margin-bottom: 20px; text-align: center; }
+    .modal-input-group { margin-bottom: 15px; }
+    .modal-input-group label { font-size: 12px; font-weight: 700; color: var(--text-dark); display: block; margin-bottom: 5px; }
+    .modal-input-group input { width: 100%; height: 46px; background-color: white; border: 1px solid var(--border-color); border-radius: 14px; padding: 0 15px; font-size: 14px; color: var(--text-dark); outline: none; }
+    .modal-btns { display: flex; gap: 10px; margin-top: 25px; }
+    .btn-modal-salvar { flex: 1; height: 48px; background-color: #2F3E53; color: white; border: none; border-radius: 24px; font-weight: 800; cursor: pointer; }
+    .btn-modal-cancelar { flex: 1; height: 48px; background-color: white; color: var(--text-dark); border: 1px solid var(--border-color); border-radius: 24px; font-weight: 800; cursor: pointer; }
+
+    .subpagina-container { display: none; min-height: 100vh; background-image: url('wallpaper_fundo_.jpg'); background-size: cover; background-position: center; background-attachment: fixed; flex-direction: column; overflow-x: hidden; animation: fadeIn 0.4s ease-out; }
+    .subpagina-content-box { max-width: 900px; width: 90%; margin: 50px auto; background-color: #B4D6F1; border-radius: 30px; border: 4px solid white; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+    .subpagina-content-box h2 { font-size: 24px; font-weight: 900; color: var(--text-dark); margin-bottom: 20px; }
+    .subpagina-content-box p { font-size: 14px; font-weight: 600; color: var(--text-dark); line-height: 1.6; }
+
+    .dash-content { display: flex; align-items: center; justify-content: center; padding: 60px 40px; gap: 60px; max-width: 1000px; margin: 0 auto; }
+    .dash-envelope img { width: 100%; max-width: 450px; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.2)); animation: float 4s ease-in-out infinite; }
+    @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
+    .dash-info { max-width: 400px; text-align: center; }
+    .jelly-pill { background-color: var(--white); color: var(--text-dark); font-size: 18px; font-weight: 500; padding: 15px 30px; border-radius: 40px; display: inline-block; margin-bottom: 25px; box-shadow: 0 8px 20px rgba(138, 188, 229, 0.2); }
+    .jelly-pill strong { color: var(--primary-blue); font-size: 20px; font-weight: 700; }
+    .dash-info p { color: var(--text-dark); font-size: 15px; line-height: 1.6; font-weight: 500; text-align: justify; }
+    .dash-info p strong { font-weight: 700; }
+
+    .loja-section { background-color: #B4D6F1; position: relative; margin-top: 40px; padding: 60px 0 50px 0; border-top: 4px solid var(--white); width: 100%; }
+    .loja-tab { position: absolute; top: -46px; left: 5%; background-color: #B4D6F1; padding: 10px 40px; color: white; font-size: 24px; font-weight: 800; border-radius: 20px 20px 0 0; border-top: 4px solid var(--white); letter-spacing: 1px; z-index: 5; }
+    .carousel-container { display: flex; overflow: hidden; padding: 20px 0; position: relative; }
+    .carousel-container::before, .carousel-container::after { content: ''; position: absolute; top: 0; bottom: 0; width: 120px; z-index: 5; pointer-events: none; }
+    .carousel-container::before { left: 0; background: linear-gradient(to right, #B4D6F1, transparent); }
+    .carousel-container::after { right: 0; background: linear-gradient(to left, #B4D6F1, transparent); }
+    .carousel-track { display: flex; gap: 30px; padding-right: 30px; animation: marquee 25s linear infinite; }
+    .carousel-container:hover .carousel-track { animation-play-state: paused; }
+    @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+    .loja-item { display: flex; flex-direction: column; align-items: center; position: relative; transition: transform 0.3s; flex-shrink: 0; }
+    .loja-moldura-wrapper { position: relative; width: 240px; }
+    .loja-mold-img { width: 100%; height: auto; display: block; position: relative; z-index: 2; pointer-events: none; }
+    .loja-foto-container { position: absolute; top: 5.5%; left: 13%; width: 74%; height: 60%; border-radius: 110px 110px 0 0; overflow: hidden; z-index: 1; }
+    .loja-foto { width: 100%; height: 100%; object-fit: cover; display: block; background-color: white; }
+    .loja-price { position: absolute; bottom: 35.5%; left: 50%; transform: translateX(-50%); z-index: 3; display: flex; align-items: baseline; color: #000; gap: 3px; font-weight: 600; }
+    .loja-price .moeda { font-size: 12px; font-style: italic; }
+    .loja-price .inteiro { font-size: 32px; letter-spacing: -1.5px; line-height: 0.8; } 
+    .loja-price .centavos { font-size: 15px; }
+    .loja-title { position: absolute; bottom: 18.5%; left: 7%; width: 86%; height: 15%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; z-index: 3; color: #000; line-height: 1.1; }
+    .loja-title .nome { font-size: 13px; font-weight: 900; text-transform: uppercase; letter-spacing: -0.3px; width: 100%; word-wrap: break-word; }
+    .loja-title .nome span { font-weight: 700; } 
+    .loja-title .sub { font-size: 9px; font-weight: 700; font-style: italic; text-transform: uppercase; margin-top: 2px; width: 100%; word-wrap: break-word; }
+    .btn-add-cart-float { position: absolute; bottom: 22%; right: 5px; background-color: #2F3E53; color: white; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.25); z-index: 5; cursor: pointer; transition: transform 0.2s, background-color 0.2s; border: 2px solid white; }
+    .btn-add-cart-float:hover { transform: scale(1.1); background-color: var(--primary-blue); }
+    .btn-add-cart-float svg { width: 20px; height: 20px; }
+    .btn-remove-cart-float { position: absolute; top: 15px; right: 15px; background-color: var(--error-red); color: white; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.25); z-index: 10; cursor: pointer; transition: transform 0.2s, background-color 0.2s; border: 2px solid white; }
+    .btn-remove-cart-float:hover { transform: scale(1.1); background-color: #c0392b; }
+    .btn-remove-cart-float svg { width: 16px; height: 16px; }
+    .btn-ver-mais { display: block; margin: 10px auto 0; background-color: rgba(255,255,255,0.4); border: 2px solid white; padding: 10px 40px; border-radius: 30px; font-size: 16px; font-weight: 600; color: var(--text-dark); cursor: pointer; transition: background 0.3s; position: relative; z-index: 10; }
+    .btn-ver-mais:hover { background-color: white; }
+
+    .jellies-section { width: 100%; padding: 60px 20px; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 5; }
+    .jellies-title { font-family: 'Analogist', sans-serif; font-size: 32px; color: var(--text-dark); margin-bottom: 40px; text-align: center; font-weight: normal; }
+    .jellies-title span { font-family: 'Great Vibes', cursive; font-size: 52px; color: var(--text-dark); font-weight: normal; margin-left: 5px; }
+    .jellies-grid { display: flex; flex-direction: column; align-items: center; gap: 30px; max-width: 900px; width: 100%; }
+    .jellies-row { display: flex; justify-content: center; gap: 40px; width: 100%; flex-wrap: wrap; }
+    .jelly-profile-card { width: 220px; transition: transform 0.3s ease; cursor: pointer; text-decoration: none; display: block; }
+    .jelly-profile-card:hover { transform: scale(1.05); }
+    .jelly-profile-card img { width: 100%; height: auto; display: block; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.15)); }
+
+    .loja-completa-container { display: none; min-height: 100vh; background-image: url('wallpaper_fundo_.jpg'); background-size: cover; background-position: center; background-attachment: fixed; flex-direction: column; overflow-x: hidden; animation: fadeIn 0.4s ease-out; }
+    .loja-main-content { max-width: 1200px; width: 90%; margin: 40px auto; position: relative; }
+    .loja-catalog-box { background-color: #B4D6F1; border-radius: 30px; border: 4px solid white; padding: 60px 40px 40px 40px; min-height: 600px; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-top: 75px; }
+    .loja-catalog-box .loja-tab { position: absolute; top: -46px; left: 5%; background-color: #B4D6F1; padding: 10px 40px; color: white; font-size: 24px; font-weight: 800; border-radius: 20px 20px 0 0; border-top: 4px solid var(--white); letter-spacing: 1px; z-index: 5; }
+    .loja-search-bar-wrapper { position: absolute; top: -46px; left: calc(5% + 195px); background-color: #2b2b2b; border-radius: 20px 20px 0 0; padding: 10px 25px; display: flex; align-items: center; gap: 15px; z-index: 10; width: 400px; box-shadow: 0 -4px 15px rgba(0,0,0,0.15); }
+    .loja-search-bar-wrapper svg { width: 22px; height: 22px; color: white; cursor: pointer; }
+    .loja-search-input { flex: 1; background: transparent; border: none; outline: none; color: white; font-size: 15px; }
+    .loja-search-input::placeholder { color: #aaa; }
+    .filter-dropdown { position: absolute; top: 55px; left: 0; background-color: #2b2b2b; border-radius: 14px; padding: 10px 0; width: 220px; box-shadow: 0 8px 20px rgba(0,0,0,0.3); display: none; z-index: 30; }
+    .filter-dropdown.active { display: block; }
+    .filter-option { padding: 10px 20px; color: white; font-size: 14px; cursor: pointer; transition: background 0.2s; }
+    .filter-option:hover { background-color: #3e3e3e; color: var(--primary-blue); }
+    .loja-catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 40px; justify-items: center; }
+
+    .carrinho-container { display: none; min-height: 100vh; background-image: url('wallpaper_fundo_.jpg'); background-size: cover; background-position: center; background-attachment: fixed; flex-direction: column; overflow-x: hidden; animation: fadeIn 0.4s ease-out; }
+    .carrinho-main-content { max-width: 1200px; width: 90%; margin: 40px auto; position: relative; }
+    .carrinho-box { background-color: #B4D6F1; border-radius: 30px; border: 4px solid white; padding: 40px; min-height: 600px; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-top: 75px; display: flex; justify-content: space-between; gap: 40px; flex-wrap: wrap; }
+    .carrinho-box .loja-tab { position: absolute; top: -46px; left: 5%; background-color: #B4D6F1; padding: 10px 40px; color: white; font-size: 24px; font-weight: 800; border-radius: 20px 20px 0 0; border-top: 4px solid var(--white); letter-spacing: 1px; z-index: 5; }
+    .carrinho-left { flex: 1; display: flex; flex-direction: column; justify-content: space-between; min-width: 300px; }
+    .carrinho-itens-grid { display: flex; gap: 25px; flex-wrap: wrap; margin-top: 20px; }
+    .cart-tag-warehouse { background-color: #E2ECD8; color: #3B5B24; font-size: 9px; font-weight: 700; padding: 3px 10px; border-radius: 12px; display: inline-block; margin-top: 3px; }
+    .cart-tag-staff { background-color: #C1E1D2; color: #1A4D35; font-size: 9px; font-weight: 700; padding: 3px 10px; border-radius: 12px; display: inline-block; margin-top: 3px; }
+    .cart-tag-frete { background-color: #FCE8E6; color: #A53725; font-size: 9px; font-weight: 700; padding: 3px 10px; border-radius: 12px; display: inline-block; margin-top: 3px; }
+    .carrinho-total-box { margin-top: 40px; }
+    .carrinho-total-box .total-label { font-size: 14px; font-weight: 800; color: var(--text-dark); margin-bottom: 8px; }
+    .carrinho-total-pill { background-color: white; padding: 15px 30px; border-radius: 30px; display: inline-flex; align-items: baseline; gap: 5px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); font-weight: 800; font-size: 28px; color: var(--text-dark); }
+    .carrinho-total-pill span.currency { font-size: 14px; font-weight: 700; }
+    .carrinho-right { width: 380px; background-color: white; border-radius: 24px; padding: 30px 25px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
+    .pagamento-titulo { font-size: 18px; font-weight: 700; color: var(--text-dark); margin-bottom: 20px; }
+    .pagamento-opcao { border: 1px solid var(--border-color); border-radius: 16px; padding: 15px 20px; margin-bottom: 15px; cursor: pointer; transition: all 0.2s; }
+    .pagamento-opcao.selected { border-color: var(--primary-blue); background-color: #F4F9FD; }
+    .pagamento-radio-label { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 600; color: var(--text-dark); cursor: pointer; }
+    .pagamento-radio-label input { accent-color: var(--primary-blue); width: 18px; height: 18px; }
+    .pagamento-aviso { font-size: 10px; color: var(--text-light); margin-top: 6px; margin-left: 28px; line-height: 1.4; }
+    .pix-chave-info { font-size: 11px; color: var(--text-dark); margin: 15px 0; line-height: 1.4; font-weight: 500; }
+    .pix-chave-info strong { color: var(--primary-blue); }
+    .confirmacao-dados { margin-top: 20px; }
+    .confirmacao-dados label { font-size: 11px; font-weight: 700; color: var(--text-dark); display: block; margin-bottom: 6px; }
+    .confirmacao-dados label span { color: var(--error-red); }
+    .confirmacao-input { width: 100%; height: 44px; background-color: #F8FBFE; border: 1px solid var(--border-color); border-radius: 14px; padding: 0 15px; font-size: 13px; color: var(--text-dark); outline: none; margin-bottom: 15px; }
+    .btn-anexar { width: 100%; height: 44px; background-color: #F8FBFE; border: 1px solid var(--border-color); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: var(--text-dark); cursor: pointer; transition: background 0.2s; margin-bottom: 5px; }
+    .btn-anexar:hover { background-color: #EFEFF1; }
+    .btn-comprar { width: 100%; height: 52px; background-color: #2F3E53; color: white; border: none; border-radius: 26px; font-size: 16px; font-weight: 700; cursor: pointer; transition: opacity 0.2s; }
+    .btn-comprar:hover { opacity: 0.9; }
+
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.4); z-index: 1000; align-items: center; justify-content: center; animation: fadeIn 0.3s; }
+    .modal-content { background-color: #A0CBE8; border-radius: 30px; padding: 40px; text-align: center; width: 90%; max-width: 420px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); }
+    .modal-content h2 { font-size: 20px; font-weight: 800; color: #000; margin-bottom: 8px; }
+    .modal-content p { font-size: 11px; font-weight: 700; color: #000; margin-bottom: 25px; line-height: 1.4; }
+    #btn-modal-ok, #btn-modal-envio-ok { background-color: #2F3E53; color: white; border: none; border-radius: 20px; padding: 10px 40px; font-size: 14px; font-weight: 700; cursor: pointer; transition: opacity 0.2s; }
+    #btn-modal-ok:hover, #btn-modal-envio-ok:hover { opacity: 0.9; }
+
+    @media (max-width: 768px) { .dash-content { flex-direction: column; padding: 20px; gap: 30px; } .dash-envelope img { max-width: 300px; } .dash-header { padding: 0 20px; } .dash-logo { width: 170px; top: 15px; } .dash-nav { gap: 15px; font-size: 12px; } .painel-main-content { padding: 25px 20px; } }
+  </style>
+</head>
+<body>
+
+  <!-- AUTENTICAÇÃO -->
+  <div class="auth-container" id="auth-container">
+    <div class="app-wrapper">
+      <header class="logo-area"><img src="jellyfish_client.png" alt="Jellyfish Client"></header>
+      <main class="bottom-sheet">
+        <div id="view-login" class="view-section active">
+          <h1>Bem-vindo de volta!</h1>
+          <p class="subtitle">Entre na sua conta para acompanhar os seus pedidos, pagamentos e muito mais.</p>
+          <form id="login-form">
+            <div class="input-box"><svg class="icon-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+              <input type="email" id="login-email" placeholder="E-mail" required></div>
+            <div class="input-box"><svg class="icon-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              <input type="password" id="login-password" placeholder="Senha" required>
+              <button type="button" class="icon-right" id="toggle-password"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></button></div>
+            <p id="login-error" class="error-msg">E-mail ou senha incorretos.</p>
+            <div class="form-options"><label class="checkbox-container"><input type="checkbox"><span>Lembrar de mim</span></label><a href="#" class="forgot-password" id="btn-forgot-password">Esqueceu sua senha?</a></div>
+            <button type="submit" class="btn-primary" id="btn-submit-login">Entrar &rarr;</button>
+          </form>
+          <div class="divider">Ainda não tem uma conta?</div>
+          <button type="button" class="btn-secondary btn-outline-blue" id="btn-show-code">Solicitar acesso</button>
+        </div>
+
+        <div id="view-code" class="view-section">
+          <h1>Acesso Exclusivo</h1>
+          <p class="subtitle">Insira o seu código de convite da CEG para criar o seu perfil.</p>
+          <form id="code-form">
+            <div class="input-box"><svg class="icon-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
+              <input type="text" id="access-code" placeholder="Ex: JELLY..." style="text-transform: uppercase;" required></div>
+            <p id="code-error" class="error-msg">Código inválido. Verifique e tente novamente.</p>
+            <button type="submit" class="btn-primary">Validar Código</button>
+            <button type="button" class="btn-secondary" id="btn-back-to-login">Voltar</button>
+          </form>
+        </div>
+
+        <div id="view-register" class="view-section">
+          <h1>Criar Perfil</h1>
+          <p class="subtitle">Código aceito! Preencha os seus dados para concluir o seu registo.</p>
+          <form id="register-form">
+            <div class="input-box"><svg class="icon-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg><input type="text" id="reg-name" placeholder="Nome Completo" required></div>
+            <div class="input-box"><svg class="icon-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"></circle><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"></path></svg><input type="text" id="reg-username" placeholder="Utilizador (ex: @seu_nome)" required></div>
+            <div class="input-box"><svg class="icon-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg><input type="tel" id="reg-phone" placeholder="Celular com DDD" required maxlength="15"></div>
+            <div class="input-box"><svg class="icon-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg><input type="email" id="reg-email" placeholder="E-mail" required></div>
+            <div class="input-box"><svg class="icon-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg><input type="password" id="reg-password" placeholder="Crie uma senha (+ de 6 dígitos)" required minlength="7"><button type="button" class="icon-right" id="toggle-reg-password"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></button></div>
+            <button type="submit" class="btn-primary" style="margin-top: 25px;" id="btn-submit-register">Finalizar Cadastro</button>
+            <button type="button" class="btn-secondary" id="btn-back-to-login2">Cancelar</button>
+          </form>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- MENU LATERAL (SIDEBAR) -->
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+  <nav class="sidebar-menu" id="sidebar-menu">
+    <div class="sidebar-top-content">
+      <div class="sidebar-menu-title" id="btn-close-sidebar">MENU</div>
+      
+      <div class="sidebar-user-card" id="btn-open-painel-sidebar">
+        <img src="image_3595a6_2.jpg" alt="Avatar" class="sidebar-user-avatar" id="sidebar-avatar">
+        <div class="sidebar-user-info">
+          <span class="sidebar-user-name" id="sidebar-name">Carregando...</span>
+          <span class="sidebar-user-handle" id="sidebar-handle">@utilizador</span>
+        </div>
+      </div>
+
+      <div class="sidebar-nav-links">
+        <a href="#" id="link-meus-envios-sidebar">MEUS ENVIOS</a>
+        <a href="#" id="link-repasses">REPASSES</a>
+        <a href="#" id="link-pedidos">PEDIDO INDIVIDUAIS</a>
+        <a href="#" id="link-termos">TERMOS</a>
+        <a href="#" id="link-ajuda">AJUDA</a>
+      </div>
+    </div>
+    <a href="#" class="sidebar-sair-btn btn-logout">SAIR</a>
+  </nav>
+
+  <!-- DASHBOARD HOME -->
+  <div class="dashboard-container" id="dashboard-container">
+    <header class="dash-header">
+      <nav class="dash-nav">
+        <a href="#" id="nav-menu-toggle">MENU</a>
+        <a href="#">TERMOS</a>
+        <a href="#" class="btn-logout" style="color: #FFD1D1; margin-left: 10px;">SAIR</a>
+      </nav>
+      <img src="jellyfish_client.png" alt="Jellyfish Logo" class="dash-logo">
+      <div class="dash-cart">
+        <svg id="btn-open-cart-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="cursor: pointer;"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+      </div>
+    </header>
+
+    <main class="dash-content">
+      <div class="dash-envelope"><img src="envelope.png" alt="Bem-vindo Jellyfish"></div>
+      <div class="dash-info">
+        <div class="jelly-pill">Juntos somos <strong id="real-jelly-count">...</strong> Jellys!</div>
+        <p>Acompanhe suas <strong>CEGs</strong>, confira seus <strong>pagamentos</strong> e fique por dentro de cada atualização! Aproveite também para garantir novos itens <strong>na nossa lojinha!</strong></p>
+      </div>
+    </main>
+
+    <section class="loja-section">
+      <div class="loja-tab">LOJA</div>
+      <div class="carousel-container">
+        <div class="carousel-track" id="loja-carousel-1"></div>
+        <div class="carousel-track" id="loja-carousel-2"></div>
+      </div>
+      <button class="btn-ver-mais" id="btn-ver-mais">Ver mais</button>
+    </section>
+
+    <section class="jellies-section">
+      <h2 class="jellies-title">Conheça os <span>Jelly's</span></h2>
+      <div class="jellies-grid">
+        <div class="jellies-row">
+          <a href="https://x.com/gyukoore" target="_blank" class="jelly-profile-card"><img src="JELLY_LILI.png" alt="Lili gom"></a>
+          <a href="https://x.com/redmalve" target="_blank" class="jelly-profile-card"><img src="JELLY_MALVE.png" alt="Malve gom"></a>
+          <a href="https://x.com/irochattie" target="_blank" class="jelly-profile-card"><img src="JELLY_DANI.png" alt="Dani staff"></a>
+        </div>
+        <div class="jellies-row">
+          <a href="https://x.com/snoopyzitos" target="_blank" class="jelly-profile-card"><img src="JELLY_LENA.png" alt="Lena staff"></a>
+          <a href="https://x.com/wonyscaptor" target="_blank" class="jelly-profile-card"><img src="JELLY_LUANA.png" alt="Luana staff"></a>
+          <a href="https://x.com/chuucaine" target="_blank" class="jelly-profile-card"><img src="JELLY_AKUMA.png" alt="Akuma dev"></a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- PAINEL DE CONTROLE DO CLIENTE -->
+  <div class="painel-container" id="painel-container">
+    <header class="dash-header">
+      <nav class="dash-nav">
+        <a href="#" id="btn-voltar-home-painel">MENU</a>
+        <a href="#" id="link-termos-painel">TERMOS</a>
+        <a href="#" class="btn-logout" style="color: #FFD1D1; margin-left: 10px;">SAIR</a>
+      </nav>
+      <img src="jellyfish_client.png" alt="Jellyfish Logo" class="dash-logo">
+      <div class="dash-cart">
+        <svg id="btn-open-cart-painel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="cursor: pointer;"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+      </div>
+    </header>
+
+    <main style="padding: 40px 0;">
+      <div class="painel-main-content">
+        <div class="loja-tab">PAINEL</div>
+
+        <div class="painel-left-col">
+          <div class="painel-user-box">
+            <img src="image_3595a6_2.jpg" alt="Avatar" class="painel-user-avatar" id="painel-avatar">
+            <div class="painel-user-name" id="painel-nome">Gudugo</div>
+            <div class="painel-user-handle" id="painel-handle">@gudugodamas</div>
+            
+            <div class="painel-user-btns">
+              <button class="painel-user-btn" id="btn-editar-perfil">editar perfil</button>
+              <button class="painel-user-btn" id="btn-alterar-dados">alterar dados pessoais</button>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 10px;" id="painel-vendedoras-col">
+            <div class="vendedora-tab malve-ativo" id="tab-vendedora-malve" onclick="mudarVendedora('malve')">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <img src="JELLY_MALVE.png" alt="Malve">
+                <span>Malve CEGS</span>
+              </div>
+              <div class="vendedora-radio"></div>
+            </div>
+
+            <div class="vendedora-tab" id="tab-vendedora-lili" onclick="mudarVendedora('lili')">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <img src="JELLY_LILI.png" alt="Lili">
+                <span>Lili CEGS</span>
+              </div>
+              <div class="vendedora-radio"></div>
+            </div>
+          </div>
+
+          <div class="painel-menu-list">
+            <a href="#" class="painel-menu-item" id="menu-meus-itens">
+              <div class="titulo-menu">Meus Itens</div>
+              <div class="sub-menu">Localize seus itens e verifique as últimas informações da ceg.</div>
+            </a>
+            <a href="https://drive.google.com/drive/folders/1z3Z1UqRNOq_kuEiHJ-vxgdU2mSd_3Mkw?usp=drive_link" target="_blank" class="painel-menu-item" id="menu-meu-armazém">
+              <div class="titulo-menu">Meu armazém</div>
+              <div class="sub-menu">Itens que se encontram em território nacional prontos para envio. Pesquise pelo seu nome ou @ dentro da pasta.</div>
+            </a>
+            <a href="#" class="painel-menu-item highlight" id="menu-solicitar-envio">
+              <div class="titulo-menu">Solicitar envio</div>
+              <div class="sub-menu">Solicite envio dos seus itens armazenados para a sua casa!</div>
+            </a>
+            <a href="#" class="painel-menu-item" id="menu-meus-emblemas">
+              <div class="titulo-menu">Meus emblemas</div>
+            </a>
+          </div>
+        </div>
+
+        <div class="painel-right-col" id="painel-coluna-direita">
+          <h2 class="painel-welcome-title" id="painel-titulo-boas-vindas">Bem vinda de volta, Gudugo!</h2>
+
+          <div class="resumo-cards-grid">
+            <div class="resumo-card">
+              <span class="label">Itens pendentes:</span>
+              <span class="valor" id="resumo-val-itens">R$ 0,00</span>
+            </div>
+            <div class="resumo-card">
+              <span class="label">Fretes inter pendentes:</span>
+              <span class="valor" id="resumo-val-fretes">R$ 22,70</span>
+            </div>
+            <div class="resumo-card">
+              <span class="label">Taxas pendentes:</span>
+              <span class="valor" id="resumo-val-taxas">R$ 0,00</span>
+            </div>
+          </div>
+          <div class="resumo-aviso">Cuidado com os prazos estabelecidos. Verifique no grupo da ceg ou abaixo nos itens pendentes.</div>
+
+          <div class="pendencias-box">
+            <div class="pendencias-header">
+              <h3>Pendências:</h3>
+              <button class="btn-selecionar-todos" id="btn-selecionar-selecao">Selecionar</button>
+            </div>
+
+            <div id="lista-pendencias-container" style="display: flex; flex-direction: column; gap: 12px;"></div>
+
+            <button class="btn-adicionar-carrinho-painel" id="btn-adicionar-carrinho-painel">Adicionar ao carrinho</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- MODAL: DETALHES DO ITEM -->
+  <div class="detalhes-item-overlay" id="modal-detalhes-item">
+    <div class="detalhes-item-modal">
+      <div class="detalhes-card-preview">
+        <img src="" class="detalhes-card-foto" id="detalhes-modal-foto" alt="">
+        <div class="detalhes-card-nome" id="detalhes-modal-titulo">NOME DO ITEM</div>
+        <div class="detalhes-card-sub" id="detalhes-modal-sub">SUBTITULO</div>
+      </div>
+      <div class="detalhes-info-col">
+        <div class="detalhes-campo-grupo">
+          <label>GOM:</label>
+          <div class="detalhes-campo-valor" id="detalhes-modal-gom">Lili</div>
+        </div>
+        <div class="detalhes-campo-grupo">
+          <label>STATUS:</label>
+          <div class="detalhes-campo-valor" id="detalhes-modal-status">No Warehouse</div>
+        </div>
+        <div class="detalhes-campo-grupo">
+          <label>CEG:</label>
+          <div class="detalhes-campo-valor" id="detalhes-modal-ceg">Pedidos individuais</div>
+        </div>
+        <div class="detalhes-campo-grupo">
+          <label>CAIXA:</label>
+          <div class="detalhes-campo-valor" id="detalhes-modal-caixa">Indefinida</div>
+        </div>
+      </div>
+      <button class="btn-voltar-detalhes" id="btn-fechar-detalhes">Voltar</button>
+    </div>
+  </div>
+
+  <!-- MODAL EDITAR PERFIL -->
+  <div class="modal-overlay" id="modal-editar-perfil">
+    <div class="modal-box">
+      <h2>Editar Perfil</h2>
+      <form id="form-editar-perfil">
+        <div class="modal-input-group">
+          <label>Nome:</label>
+          <input type="text" id="input-edit-nome" required>
+        </div>
+        <div class="modal-input-group">
+          <label>Utilizador (@):</label>
+          <input type="text" id="input-edit-handle" required>
+        </div>
+        <div class="modal-input-group">
+          <label>Link da Foto de Perfil:</label>
+          <input type="text" id="input-edit-avatar" placeholder="Ex: image_3595a6_2.jpg">
+        </div>
+        <div class="modal-btns">
+          <button type="submit" class="btn-modal-salvar">Salvar</button>
+          <button type="button" class="btn-modal-cancelar" id="btn-cancelar-perfil">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL ALTERAR DADOS PESSOAIS -->
+  <div class="modal-overlay" id="modal-alterar-dados">
+    <div class="modal-box">
+      <h2>Alterar Dados Pessoais</h2>
+      <form id="form-alterar-dados">
+        <div class="modal-input-group">
+          <label>Número de Telefone (Celular):</label>
+          <input type="tel" id="input-edit-phone" placeholder="(00) 00000-0000" maxlength="15" required>
+        </div>
+        <div class="modal-input-group">
+          <label>E-mail:</label>
+          <input type="email" id="input-edit-email" required>
+        </div>
+        <div class="modal-btns">
+          <button type="submit" class="btn-modal-salvar">Salvar Dados</button>
+          <button type="button" class="btn-modal-cancelar" id="btn-cancelar-dados">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- SUBPÁGINA: MEUS ENVIOS -->
+  <div class="subpagina-container" id="subpagina-meus-envios">
+    <header class="dash-header">
+      <nav class="dash-nav"><a href="#" class="btn-voltar-painel">← VOLTAR AO PAINEL</a></nav>
+      <img src="jellyfish_client.png" alt="Logo" class="dash-logo">
+      <div></div>
+    </header>
+    <main style="padding: 40px 0;">
+      <div class="meus-envios-box">
+        <div class="loja-tab">ENVIOS</div>
+        <div class="meus-envios-titulo">Meus envios</div>
+        <div id="lista-meus-envios-container" style="display: flex; flex-direction: column; gap: 15px; margin-top: 15px;">
+          <!-- Conteúdo gerado dinamicamente -->
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- SUBPÁGINA: SOLICITAR ENVIO (FORMULÁRIO COMPLETO) -->
+  <div class="subpagina-container" id="subpagina-solicitar-envio">
+    <header class="dash-header">
+      <nav class="dash-nav"><a href="#" class="btn-voltar-painel">← VOLTAR AO PAINEL</a></nav>
+      <img src="jellyfish_client.png" alt="Logo" class="dash-logo">
+      <div></div>
+    </header>
+    <main style="padding: 40px 0;">
+      <div class="solicitar-envio-box">
+        <div class="loja-tab">ENVIO</div>
+        <div class="solicitar-envio-titulo">Seus itens em breve estarão em casa!</div>
+        <div class="solicitar-envio-desc">Atenção! São DUAS GOMs na comunidade que realizam os envios. Confira ANTES de pedir envio com quem está os seus itens. Eles estão identificados na sua pasta de armazém.</div>
+
+        <form id="form-solicitar-envio" style="width: 100%;">
+          <input type="file" id="input-proof-armazem" accept="image/*,application/pdf" style="display: none;">
+          <button type="button" class="btn-anexar-proof" id="btn-trigger-proof">
+            <div class="btn-anexar-proof-content" id="texto-proof-selecionado">
+              Anexar proof do armazém 
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            </div>
+            <span class="proof-asterisco">*</span>
+          </button>
+          <div class="proof-sub-instrucao">Vá até o <a href="https://drive.google.com/drive/folders/1z3Z1UqRNOq_kuEiHJ-vxgdU2mSd_3Mkw?usp=drive_link" target="_blank">armazém</a> e procure por seu nome e @ para encontrar o proof dos seus itens nacionais.</div>
+
+          <div class="dados-envio-titulo">Dados para envio</div>
+          <div class="dados-envio-sub">Preencha todas as informações corretamente.</div>
+
+          <div class="envio-form-grid">
+            <div class="envio-input-group">
+              <label>Nome completo <span>*</span></label>
+              <input type="text" id="envio-nome" required>
+            </div>
+            <div class="envio-input-group">
+              <label>CPF <span>*</span></label>
+              <input type="text" id="envio-cpf" placeholder="000.000.000-00" required maxlength="14">
+            </div>
+            <div class="envio-input-group">
+              <label>CEP <span>*</span></label>
+              <input type="text" id="envio-cep" placeholder="00000-000" required maxlength="9">
+            </div>
+            <div class="envio-input-group">
+              <label>Rua <span>*</span></label>
+              <input type="text" id="envio-rua" required>
+            </div>
+            <div class="envio-input-group">
+              <label>Número da casa <span>*</span></label>
+              <input type="text" id="envio-numero" required>
+            </div>
+            <div class="envio-input-group">
+              <label>Bairro <span>*</span></label>
+              <input type="text" id="envio-bairro" required>
+            </div>
+            <div class="envio-input-group full">
+              <label>Complemento</label>
+              <input type="text" id="envio-complemento" placeholder="Apto, Bloco, etc. (opcional)">
+            </div>
+            <div class="envio-input-group">
+              <label>Cidade <span>*</span></label>
+              <input type="text" id="envio-cidade" required>
+            </div>
+            <div class="envio-input-group">
+              <label>Estado <span>*</span></label>
+              <input type="text" id="envio-estado" placeholder="Ex: SP" required maxlength="2">
+            </div>
+            <div class="envio-input-group full">
+              <label>GOM <span>*</span></label>
+              <select id="envio-gom" required>
+                <option value="">Selecione a GOM responsável</option>
+                <option value="Malve">Malve</option>
+                <option value="Lili">Lili</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="envio-termos-box">
+            <label class="envio-termo-item">
+              <input type="checkbox" id="termo-1" required>
+              <span>Ao enviar o formulário, eu concordo que preenchi as informações corretamente e que em caso de problemas envolvendo alguma informação errada, compreendendo que as goms não devem se responsabilizar.</span>
+            </label>
+            <label class="envio-termo-item">
+              <input type="checkbox" id="termo-2" required>
+              <span>Ao enviar o formulário, eu concordo que qualquer problema após o envio envolvendo perda de pacote, caixas amassadas e entre outros não é responsabilidade e nem culpa das goms que enviaram meus itens.</span>
+            </label>
+          </div>
+
+          <button type="submit" class="btn-enviar-formulario">Enviar formulário</button>
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <!-- SUBPÁGINA: MEUS EMBLEMAS -->
+  <div class="subpagina-container" id="subpagina-meus-emblemas">
+    <header class="dash-header">
+      <nav class="dash-nav"><a href="#" class="btn-voltar-painel">← VOLTAR AO PAINEL</a></nav>
+      <img src="jellyfish_client.png" alt="Logo" class="dash-logo">
+      <div></div>
+    </header>
+    <main class="subpagina-content-box">
+      <h2>Meus Emblemas Conquistados</h2>
+      <p>Parabéns! Aqui estão todos os emblemas exclusivos que você desbloqueou participando das nossas CEGs e lojinha.</p>
+    </main>
+  </div>
+
+  <!-- CATÁLOGO DE LOJA -->
+  <div class="loja-completa-container" id="loja-completa-container">
+    <header class="dash-header">
+      <nav class="dash-nav"><a href="#" id="btn-voltar-home">MENU</a><a href="#">TERMOS</a><a href="#" class="btn-logout" style="color: #FFD1D1; margin-left: 10px;">SAIR</a></nav>
+      <img src="jellyfish_client.png" alt="Logo" class="dash-logo">
+      <div class="dash-cart"><svg id="btn-open-cart-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="cursor: pointer;"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg></div>
+    </header>
+    <main class="loja-main-content">
+      <div class="loja-catalog-box">
+        <div class="loja-tab">LOJA</div>
+        <div class="loja-search-bar-wrapper">
+          <svg id="btn-filter-toggle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="cursor: pointer;"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" id="loja-search-input" class="loja-search-input" placeholder="Pesquisar por título...">
+        </div>
+        <div class="filter-dropdown" id="filter-dropdown">
+          <div class="filter-option" data-grupo="TODOS">Todos os Grupos</div>
+          <div class="filter-option" data-grupo="ILLIT">ILLIT</div>
+          <div class="filter-option" data-grupo="LE SSERAFIM">LE SSERAFIM</div>
+          <div class="filter-option" data-grupo="NEWJEANS">NewJeans</div>
+        </div>
+        <div class="loja-catalog-grid" id="loja-catalog-grid"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- CARRINHO -->
+  <div class="carrinho-container" id="carrinho-container">
+    <header class="dash-header">
+      <nav class="dash-nav"><a href="#" id="btn-voltar-home-cart">MENU</a><a href="#">TERMOS</a><a href="#" class="btn-logout" style="color: #FFD1D1; margin-left: 10px;">SAIR</a></nav>
+      <img src="jellyfish_client.png" alt="Logo" class="dash-logo">
+      <div class="dash-cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg></div>
+    </header>
+    <main class="carrinho-main-content">
+      <div class="carrinho-box">
+        <div class="loja-tab">Item</div>
+        <div class="carrinho-left">
+          <div class="carrinho-itens-grid" id="carrinho-itens-grid"></div>
+          <div class="carrinho-total-box">
+            <div class="total-label">TOTAL:</div>
+            <div class="carrinho-total-pill"><span class="currency">R$</span> <span id="carrinho-valor-total">0,00</span></div>
+          </div>
+        </div>
+        <div class="carrinho-right">
+          <div>
+            <div class="pagamento-titulo">Forma de pagamento</div>
+            <div class="pagamento-opcao selected" id="opt-pix">
+              <label class="pagamento-radio-label"><input type="radio" name="pagamento" checked> PIX</label>
+              <div class="pagamento-aviso">* confirmação de pagamento em poucas horas.</div>
+              <div class="pix-chave-info">Envie o pix para a chave: <strong>amalvestudio@gmail.com</strong></div>
+            </div>
+            <div class="pagamento-opcao" id="opt-credito">
+              <label class="pagamento-radio-label"><input type="radio" name="pagamento"> CRÉDITO</label>
+              <div class="pagamento-aviso">⚠️ ATENÇÃO! Ao escolher essa opção, deverá aguardar a staff te chamar.</div>
+            </div>
+            <div class="confirmacao-dados" id="bloco-comprovante-pix">
+              <label>SEU nome completo no comprovante <span>*</span></label>
+              <input type="text" class="confirmacao-input" id="input-nome-comprovante">
+              <input type="file" id="input-arquivo-comprovante" accept="image/*,application/pdf" style="display: none;">
+              <button type="button" class="btn-anexar" id="btn-anexar-comprovante">Anexar comprovante</button>
+              <div id="nome-arquivo-selecionado" style="font-size: 10px; color: var(--text-light); text-align: center; margin-bottom: 20px;">Nenhum arquivo selecionado</div>
+            </div>
+          </div>
+          <button type="button" class="btn-comprar" id="btn-finalizar-compra">Comprar</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- MODAL DE SUCESSO -->
+  <div id="modal-sucesso" class="modal-overlay">
+    <div class="modal-content">
+      <h2>Oba! Está quase lá.</h2>
+      <p>Aguarde seu pagamento ser aprovado. Obrigada!</p>
+      <button id="btn-modal-ok">Ok</button>
+    </div>
+  </div>
+
+  <!-- MODAL DE SUCESSO: ENVIO SOLICITADO -->
+  <div id="modal-envio-sucesso" class="modal-overlay">
+    <div class="modal-content">
+      <h2>Oba! Envio solicitado.</h2>
+      <p>Aguarde alguma gom passar a cotação do seu pedido.<br>Acompanhe seu pedido na aba de "meus envios"</p>
+      <button id="btn-modal-envio-ok">Ok</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
+    import { getFirestore, collection, addDoc, serverTimestamp, getCountFromServer, getDocs, query, where, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
+    import { getAuth, setPersistence, browserLocalPersistence, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
+    
+    const firebaseConfig = {
+      apiKey: "AIzaSyBMeDtj4XQ2h8epxqC-VCt3N5-BzuPHPdA",
+      authDomain: "jellyfishclient.firebaseapp.com",
+      projectId: "jellyfishclient",
+      storageBucket: "jellyfishclient.firebasestorage.app",
+      messagingSenderId: "929228272244",
+      appId: "1:929228272244:web:ea6874dc7290966fe85721",
+      measurementId: "G-CKSZB2ZFSK"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    setPersistence(auth, browserLocalPersistence).catch((error) => {
+      console.error("Erro na persistência de auth:", error);
+    });
+
+    let carrinhoItens = [];
+    let meusItensPagos = [
+      { id: 'mi1', titulo: 'YUNJIN CRAZY JP', sub: 'M HOT CUT (ANNIVERSARY)', foto: 'image_3595a6_2.jpg', status: 'No warehouse', gom: 'GOM Malve', ceg: 'Pedidos individuais', caixa: 'Indefinida' }
+    ];
+    let meusEnviosLista = [
+      { id: 'env1', titulo: 'Envio #01', status: 'Em trânsito', rastreio: 'AO123456789BR', foto: 'image_3595a6_2.jpg' }
+    ];
+
+    let vendedoraAtual = 'malve'; 
+    let modoSelecaoAtivo = false;
+    let usuarioLogadoDocId = null;
+    let dadosUsuarioAtual = { telefone: '', email: '', nome: '', usuario: '' };
+
+    const produtosLoja = [
+      { id: 'p1', grupo: 'ILLIT', titulo: 'ILLIT PHOTOCARD', sub: 'SUPER REAL ME', preco: 35.00, foto: 'image_3595a6_2.jpg' },
+      { id: 'p2', grupo: 'LE SSERAFIM', titulo: 'EASY ALBUM', sub: 'COMPACT VER', preco: 65.50, foto: 'image_3595a6_2.jpg' },
+      { id: 'p3', grupo: 'NEWJEANS', titulo: 'GET UP BAG', sub: '🐰 BUNNY EDITION', preco: 89.90, foto: 'image_3595a6_2.jpg' },
+      { id: 'p4', grupo: 'ILLIT', titulo: 'MINA SPECIAL POB', sub: 'WEEHL', preco: 45.00, foto: 'image_3595a6_2.jpg' }
+    ];
+    
+    let dadosPendencias = {
+      malve: [
+        { id: 'm1', nome: 'REI MAKESTAR', sub: 'CRATIVE LOOPS-CAIXA #01', valor: 55.00, prazo: 'PRAZO ATÉ 23/10', status: 'Pendente', foto: 'image_3595a6_2.jpg' },
+        { id: 'm2', nome: 'FRETE INTER', sub: 'CAIXA #01', valor: 22.70, prazo: 'VENCEU HÁ 3 DIAS', status: 'Pendente', foto: 'image_3595a6_2.jpg' }
+      ],
+      lili: [
+        { id: 'l1', nome: 'LILI POB WENDELL', sub: 'SET EXCLUSIVE', valor: 67.30, prazo: 'PRAZO ATÉ 30/10', status: 'Pendente', foto: 'image_3595a6_2.jpg' }
+      ]
+    };
+
+    function inicializarLoja() {
+      const track1 = document.getElementById('loja-carousel-1');
+      const track2 = document.getElementById('loja-carousel-2');
+      const catalogGrid = document.getElementById('loja-catalog-grid');
+
+      if(track1 && track2) {
+        track1.innerHTML = "";
+        track2.innerHTML = "";
+        produtosLoja.forEach(prod => {
+          const pVal = Number(prod.preco).toFixed(2).split('.');
+          const htmlItem = `
+            <div class="loja-item">
+              <div class="loja-moldura-wrapper">
+                <div class="loja-foto-container"><img src="${prod.foto}" class="loja-foto"></div>
+                <img src="MOLDE_ITENS_A_VENDA.png" class="loja-mold-img">
+                <div class="loja-price"><span class="moeda">R$</span><span class="inteiro">${pVal[0]}</span><span class="centavos">,${pVal[1]}</span></div>
+                <div class="loja-title"><div class="nome">${prod.titulo}</div><div class="sub">${prod.sub}</div></div>
+                <div class="btn-add-cart-float" onclick="adicionarAoCarrinhoLoja('${prod.id}')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                </div>
+              </div>
+            </div>`;
+          track1.innerHTML += htmlItem;
+          track2.innerHTML += htmlItem;
+        });
+      }
+
+      if(catalogGrid) {
+        catalogGrid.innerHTML = "";
+        produtosLoja.forEach(prod => {
+          const pVal = Number(prod.preco).toFixed(2).split('.');
+          catalogGrid.innerHTML += `
+            <div class="loja-item">
+              <div class="loja-moldura-wrapper">
+                <div class="loja-foto-container"><img src="${prod.foto}" class="loja-foto"></div>
+                <img src="MOLDE_ITENS_A_VENDA.png" class="loja-mold-img">
+                <div class="loja-price"><span class="moeda">R$</span><span class="inteiro">${pVal[0]}</span><span class="centavos">,${pVal[1]}</span></div>
+                <div class="loja-title"><div class="nome">${prod.titulo}</div><div class="sub">${prod.sub}</div></div>
+                <div class="btn-add-cart-float" onclick="adicionarAoCarrinhoLoja('${prod.id}')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                </div>
+              </div>
+            </div>`;
+        });
+      }
+    }
+
+    window.adicionarAoCarrinhoLoja = function(id) {
+      const prod = produtosLoja.find(p => p.id === id);
+      if(prod) {
+        carrinhoItens.push({
+          titulo: prod.titulo,
+          subtitulo: prod.sub,
+          preco: prod.preco,
+          fotoUrl: prod.foto,
+          tagClass: "cart-tag-staff",
+          tagText: "Loja",
+          tagSub: prod.grupo
+        });
+        alert(`${prod.titulo} foi adicionado ao carrinho!`);
+      }
+    };
+
+    const authContainer = document.getElementById('auth-container');
+    const viewLogin = document.getElementById('view-login');
+    const viewCode = document.getElementById('view-code');
+    const viewRegister = document.getElementById('view-register');
+    function switchView(targetView) { viewLogin.classList.remove('active'); viewCode.classList.remove('active'); viewRegister.classList.remove('active'); targetView.classList.add('active'); }
+    document.getElementById('btn-show-code').addEventListener('click', () => switchView(viewCode));
+    document.getElementById('btn-back-to-login').addEventListener('click', () => switchView(viewLogin));
+    document.getElementById('btn-back-to-login2').addEventListener('click', () => switchView(viewLogin));
+
+    const validCodes = ['JELLYMALVE', 'JELLYLILI', 'JELLYDANI', 'JELLYLENA', 'JELLYLU'];
+    document.getElementById('code-form').addEventListener('submit', (e) => {
+      e.preventDefault(); 
+      if (validCodes.includes(document.getElementById('access-code').value.trim().toUpperCase())) {
+        document.getElementById('code-error').style.display = 'none'; switchView(viewRegister); 
+      } else { document.getElementById('code-error').style.display = 'block'; }
+    });
+
+    ['toggle-password', 'toggle-reg-password'].forEach(id => {
+      const el = document.getElementById(id);
+      if(el) {
+        el.addEventListener('click', function() {
+          const p = document.getElementById(id === 'toggle-password' ? 'login-password' : 'reg-password');
+          p.type = p.type === 'password' ? 'text' : 'password';
+          this.style.color = p.type === 'text' ? '#8ABCE5' : '#94A6B8';
+        });
+      }
+    });
+
+    ['reg-phone', 'input-edit-phone'].forEach(id => {
+      const el = document.getElementById(id);
+      if(el) {
+        el.addEventListener('input', function (e) {
+          let v = e.target.value.replace(/\D/g, ''); let x = v.match(/(\d{0,2})(\d{0,5})(\d{0,4})/); 
+          e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+        });
+      }
+    });
+
+    const envCpf = document.getElementById('envio-cpf');
+    if(envCpf) {
+      envCpf.addEventListener('input', function(e) {
+        let v = e.target.value.replace(/\D/g, '');
+        v = v.replace(/(\d{3})(\d)/, '$1.$2');
+        v = v.replace(/(\d{3})(\d)/, '$1.$2');
+        v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+        e.target.value = v;
+      });
+    }
+
+    const envCep = document.getElementById('envio-cep');
+    if(envCep) {
+      envCep.addEventListener('input', function(e) {
+        let v = e.target.value.replace(/\D/g, '');
+        v = v.replace(/(\d{5})(\d)/, '$1-$2');
+        e.target.value = v;
+      });
+    }
+
+    document.getElementById('btn-forgot-password').addEventListener('click', async (e) => {
+      e.preventDefault(); const email = prompt("Digite o e-mail cadastrado:");
+      if (email) { try { await sendPasswordResetEmail(auth, email); alert("E-mail enviado!"); } catch (e) { alert("Erro ao enviar e-mail."); } }
+    });
+
+    const sidebarMenu = document.getElementById('sidebar-menu');
+    const sidebarOverlay = document.getElementById('sidebar-overlay');
+    const navMenuToggle = document.getElementById('nav-menu-toggle');
+    const btnCloseSidebar = document.getElementById('btn-close-sidebar');
+
+    function toggleSidebar(e) {
+      if(e) e.preventDefault();
+      sidebarMenu.classList.toggle('active');
+      sidebarOverlay.classList.toggle('active');
+    }
+    navMenuToggle.addEventListener('click', toggleSidebar);
+    btnCloseSidebar.addEventListener('click', toggleSidebar);
+    sidebarOverlay.addEventListener('click', toggleSidebar);
+
+    const dashboardContainer = document.getElementById('dashboard-container');
+    const painelContainer = document.getElementById('painel-container');
+    const lojaCompletaContainer = document.getElementById('loja-completa-container');
+    const carrinhoContainer = document.getElementById('carrinho-container');
+    const subMeusEnvios = document.getElementById('subpagina-meus-envios');
+    const subSolicitarEnvio = document.getElementById('subpagina-solicitar-envio');
+    const subMeusEmblemas = document.getElementById('subpagina-meus-emblemas');
+
+    function esconderTodasAsTelas() {
+      authContainer.style.display = 'none';
+      dashboardContainer.style.display = 'none';
+      painelContainer.style.display = 'none';
+      lojaCompletaContainer.style.display = 'none';
+      carrinhoContainer.style.display = 'none';
+      subMeusEnvios.style.display = 'none';
+      subSolicitarEnvio.style.display = 'none';
+      subMeusEmblemas.style.display = 'none';
+      sidebarMenu.classList.remove('active');
+      sidebarOverlay.classList.remove('active');
+    }
+
+    function abrirPainelControle(e) {
+      if(e) e.preventDefault();
+      esconderTodasAsTelas();
+      painelContainer.style.display = 'flex';
+      renderizarPainelPendencias();
+      window.scrollTo(0, 0);
+    }
+    document.getElementById('btn-open-painel-sidebar').addEventListener('click', abrirPainelControle);
+
+    const voltarParaHome = (e) => { if(e) e.preventDefault(); esconderTodasAsTelas(); dashboardContainer.style.display = 'flex'; window.scrollTo(0, 0); };
+    document.getElementById('btn-voltar-home-painel').addEventListener('click', voltarParaHome);
+    document.getElementById('link-termos-painel').addEventListener('click', (e) => e.preventDefault());
+
+    document.getElementById('btn-ver-mais').addEventListener('click', () => { esconderTodasAsTelas(); lojaCompletaContainer.style.display = 'flex'; window.scrollTo(0, 0); });
+
+    const abrirCarrinho = (e) => { e.preventDefault(); esconderTodasAsTelas(); carrinhoContainer.style.display = 'flex'; renderizarCarrinho(); window.scrollTo(0, 0); };
+    document.getElementById('btn-open-cart-1').addEventListener('click', abrirCarrinho);
+    document.getElementById('btn-open-cart-2').addEventListener('click', abrirCarrinho);
+    document.getElementById('btn-open-cart-painel').addEventListener('click', abrirCarrinho);
+
+    window.mudarVendedora = function(vendedora) {
+      vendedoraAtual = vendedora;
+      modoSelecaoAtivo = false;
+      const btnSel = document.getElementById('btn-selecionar-selecao');
+      if(btnSel) btnSel.classList.remove('ativo');
+
+      const tabMalve = document.getElementById('tab-vendedora-malve');
+      const tabLili = document.getElementById('tab-vendedora-lili');
+
+      if(tabMalve && tabLili) {
+        if(vendedora === 'malve') {
+          tabMalve.className = "vendedora-tab malve-ativo";
+          tabLili.className = "vendedora-tab";
+        } else {
+          tabMalve.className = "vendedora-tab";
+          tabLili.className = "vendedora-tab lili-ativo";
+        }
+      }
+      renderizarPainelPendencias();
+    };
+
+    const btnSelObj = document.getElementById('btn-selecionar-selecao');
+    if(btnSelObj) {
+      btnSelObj.addEventListener('click', () => {
+        modoSelecaoAtivo = !modoSelecaoAtivo;
+        const btnSel = document.getElementById('btn-selecionar-selecao');
+        if(modoSelecaoAtivo) {
+          btnSel.classList.add('ativo');
+        } else {
+          btnSel.classList.remove('ativo');
+        }
+        renderizarPainelPendencias();
+      });
+    }
+
+    function renderizarPainelPendencias() {
+      const listaContainer = document.getElementById('lista-pendencias-container');
+      if(!listaContainer) return;
+      const itensArr = dadosPendencias[vendedoraAtual] || [];
+      listaContainer.innerHTML = "";
+
+      let totalItens = 0;
+      let totalFretes = 0;
+
+      if(itensArr.length === 0) {
+        listaContainer.innerHTML = `<p style="font-size: 12px; color: var(--text-light); text-align: center; padding: 15px;">Nenhuma pendência com esta vendedora.</p>`;
+      }
+
+      itensArr.forEach(item => {
+        if(item.status !== 'No carrinho') {
+          if(item.nome.includes('FRETE')) { totalFretes += item.valor; } else { totalItens += item.valor; }
+        }
+        
+        const displayCheckbox = modoSelecaoAtivo ? 'block' : 'none';
+        const isNoCarrinho = item.status === 'No carrinho';
+        const statusTagClass = isNoCarrinho ? 'pendencia-status-tag no-carrinho' : 'pendencia-status-tag';
+        const statusTexto = isNoCarrinho ? 'No carrinho' : item.status;
+
+        listaContainer.innerHTML += `
+          <div class="pendencia-item-card" style="${isNoCarrinho ? 'opacity: 0.85;' : ''}">
+            <div class="pendencia-info-left">
+              <input type="checkbox" class="pendencia-checkbox" data-id="${item.id}" data-vendedora="${vendedoraAtual}" style="display: ${displayCheckbox};" ${isNoCarrinho ? 'disabled' : ''}>
+              <img src="${item.foto}" class="pendencia-img" alt="">
+              <div class="pendencia-details">
+                <div class="nome-item">${item.nome}</div>
+                <div class="sub-item">${item.sub}</div>
+                <div class="valor-tag">VALOR</div>
+              </div>
+            </div>
+            <div class="pendencia-info-right">
+              <div class="pendencia-prazo">${item.prazo}</div>
+              <div class="${statusTagClass}">${statusTexto}</div>
+              <div class="pendencia-preco">R$ ${item.valor.toFixed(2).replace('.', ',')}</div>
+            </div>
+          </div>
+        `;
+      });
+
+      const elItens = document.getElementById('resumo-val-itens');
+      const elFretes = document.getElementById('resumo-val-fretes');
+
+      if(elItens) {
+        elItens.innerText = `R$ ${totalItens.toFixed(2).replace('.', ',')}`;
+        if(totalItens > 0) { elItens.classList.add('tem-pendencia'); } else { elItens.classList.remove('tem-pendencia'); }
+      }
+
+      if(elFretes) {
+        elFretes.innerText = `R$ ${totalFretes.toFixed(2).replace('.', ',')}`;
+        if(totalFretes > 0) { elFretes.classList.add('tem-pendencia'); } else { elFretes.classList.remove('tem-pendencia'); }
+      }
+    }
+
+    const btnAddCartPainel = document.getElementById('btn-adicionar-carrinho-painel');
+    if(btnAddCartPainel) {
+      btnAddCartPainel.addEventListener('click', () => {
+        if(!modoSelecaoAtivo) { alert("Clique primeiro em 'Selecionar' para escolher os itens que deseja pagar."); return; }
+        const checkboxes = document.querySelectorAll('.pendencia-checkbox:checked');
+        if(checkboxes.length === 0) { alert("Selecione ao menos um item pendente para pagar!"); return; }
+
+        checkboxes.forEach(chk => {
+          const id = chk.getAttribute('data-id');
+          const vend = chk.getAttribute('data-vendedora');
+          const itemObj = dadosPendencias[vend].find(i => i.id === id);
+          if(itemObj && itemObj.status !== 'No carrinho') {
+            carrinhoItens.push({
+              idOriginal: itemObj.id,
+              vendedoraOriginal: vend,
+              titulo: itemObj.nome,
+              subtitulo: itemObj.sub,
+              preco: itemObj.valor,
+              fotoUrl: itemObj.foto,
+              tagClass: "cart-tag-warehouse",
+              tagText: itemObj.nome.includes('FRETE') ? "Frete INTER" : "Pendente",
+              tagSub: vend.toUpperCase()
+            });
+            itemObj.status = 'No carrinho';
+          }
+        });
+
+        modoSelecaoAtivo = false;
+        const btnSel = document.getElementById('btn-selecionar-selecao');
+        if(btnSel) btnSel.classList.remove('ativo');
+        renderizarPainelPendencias();
+        alert("Itens selecionados adicionados ao carrinho com sucesso!");
+        abrirCarrinho();
+      });
+    }
+
+    // EDITAR PERFIL
+    const modalEditarPerfil = document.getElementById('modal-editar-perfil');
+    document.getElementById('btn-editar-perfil').addEventListener('click', () => {
+      document.getElementById('input-edit-nome').value = document.getElementById('painel-nome').innerText;
+      document.getElementById('input-edit-handle').value = document.getElementById('painel-handle').innerText;
+      modalEditarPerfil.style.display = 'flex';
+    });
+    document.getElementById('btn-cancelar-perfil').addEventListener('click', () => { modalEditarPerfil.style.display = 'none'; });
+
+    document.getElementById('form-editar-perfil').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const novoNome = document.getElementById('input-edit-nome').value;
+      const novoHandle = document.getElementById('input-edit-handle').value;
+      const novoAvatar = document.getElementById('input-edit-avatar').value.trim();
+
+      try {
+        if(usuarioLogadoDocId) {
+          const userRef = doc(db, "usuarios", usuarioLogadoDocId);
+          let updateData = { nome: novoNome, usuario: novoHandle };
+          if(novoAvatar) { updateData.avatar = novoAvatar; }
+          await updateDoc(userRef, updateData);
+        }
+
+        document.getElementById('sidebar-name').innerText = novoNome;
+        document.getElementById('sidebar-handle').innerText = novoHandle;
+        document.getElementById('painel-nome').innerText = novoNome;
+        document.getElementById('painel-handle').innerText = novoHandle;
+        document.getElementById('painel-titulo-boas-vindas').innerText = `Bem vinda de volta, ${novoNome}!`;
+
+        if(novoAvatar) {
+          document.getElementById('sidebar-avatar').src = novoAvatar;
+          document.getElementById('painel-avatar').src = novoAvatar;
+        }
+
+        modalEditarPerfil.style.display = 'none';
+        alert("Perfil atualizado com sucesso!");
+      } catch (err) {
+        console.error(err);
+        alert("Erro ao atualizar perfil.");
+      }
+    });
+
+    // ALTERAR DADOS PESSOAIS
+    const modalAlterarDados = document.getElementById('modal-alterar-dados');
+    document.getElementById('btn-alterar-dados').addEventListener('click', () => {
+      document.getElementById('input-edit-phone').value = dadosUsuarioAtual.telefone || '';
+      document.getElementById('input-edit-email').value = dadosUsuarioAtual.email || '';
+      modalAlterarDados.style.display = 'flex';
+    });
+    document.getElementById('btn-cancelar-dados').addEventListener('click', () => { modalAlterarDados.style.display = 'none'; });
+
+    document.getElementById('form-alterar-dados').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const novoTelefone = document.getElementById('input-edit-phone').value;
+      const novoEmail = document.getElementById('input-edit-email').value;
+
+      try {
+        if(usuarioLogadoDocId) {
+          const userRef = doc(db, "usuarios", usuarioLogadoDocId);
+          await updateDoc(userRef, { telefone: novoTelefone, email: novoEmail });
+          dadosUsuarioAtual.telefone = novoTelefone;
+          dadosUsuarioAtual.email = novoEmail;
+        }
+        modalAlterarDados.style.display = 'none';
+        alert("Dados pessoais atualizados com sucesso!");
+      } catch (err) {
+        console.error(err);
+        alert("Erro ao atualizar dados pessoais.");
+      }
+    });
+
+    // NAVEGAÇÃO "MEUS ITENS"
+    document.getElementById('menu-meus-itens').addEventListener('click', (e) => {
+      e.preventDefault();
+      const colDireita = document.getElementById('painel-coluna-direita');
+      const colVendedoras = document.getElementById('painel-vendedoras-col');
+      if(colVendedoras) colVendedoras.style.display = 'none';
+
+      colDireita.innerHTML = `
+        <div class="meus-itens-box">
+          <div class="loja-tab">ITENS</div>
+          <div class="meus-itens-search-bar-wrapper">
+            <svg id="btn-meus-itens-filter-toggle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="cursor: pointer;"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" class="meus-itens-search-input" id="input-busca-meus-itens" placeholder="Pesquisar...">
+            <div class="meus-itens-filter-dropdown" id="meus-itens-filter-dropdown">
+              <div class="meus-itens-filter-option" data-status="TODOS">Todos os Status</div>
+              <div class="meus-itens-filter-option" data-status="No warehouse">No warehouse</div>
+              <div class="meus-itens-filter-option" data-status="Enviado">Enviado</div>
+            </div>
+          </div>
+          <div class="meus-itens-subtitle">Clique no item para ver informações mais precisas.</div>
+          <div class="meus-itens-grid" id="grid-meus-itens-pagos"></div>
+        </div>
+      `;
+      renderizarMeusItensPagos(meusItensPagos);
+
+      const inputBuscaMeusItens = document.getElementById('input-busca-meus-itens');
+      const btnMeusItensFilterToggle = document.getElementById('btn-meus-itens-filter-toggle');
+      const meusItensFilterDropdown = document.getElementById('meus-itens-filter-dropdown');
+
+      if(inputBuscaMeusItens) {
+        inputBuscaMeusItens.addEventListener('input', (e) => {
+          const termo = e.target.value.toLowerCase();
+          const filtrados = meusItensPagos.filter(item => 
+            item.titulo.toLowerCase().includes(termo) || item.sub.toLowerCase().includes(termo)
+          );
+          renderizarMeusItensPagos(filtrados);
+        });
+      }
+
+      if(btnMeusItensFilterToggle && meusItensFilterDropdown) {
+        btnMeusItensFilterToggle.addEventListener('click', (e) => {
+          e.stopPropagation();
+          meusItensFilterDropdown.classList.toggle('active');
+        });
+
+        document.addEventListener('click', () => {
+          meusItensFilterDropdown.classList.remove('active');
+        });
+
+        meusItensFilterDropdown.querySelectorAll('.meus-itens-filter-option').forEach(opt => {
+          opt.addEventListener('click', (e) => {
+            const status = e.target.getAttribute('data-status');
+            if(status === 'TODOS') {
+              renderizarMeusItensPagos(meusItensPagos);
+            } else {
+              const filtrados = meusItensPagos.filter(item => item.status.toLowerCase() === status.toLowerCase());
+              renderizarMeusItensPagos(filtrados);
+            }
+          });
+        });
+      }
+
+      window.scrollTo(0, 0);
+    });
+
+    function renderizarMeusItensPagos(lista) {
+      const grid = document.getElementById('grid-meus-itens-pagos');
+      if(!grid) return;
+      grid.innerHTML = "";
+      if(lista.length === 0) {
+        grid.innerHTML = `<p style="font-size: 12px; color: var(--text-light); text-align: center; width: 100%; padding: 20px;">Nenhum item encontrado.</p>`;
+        return;
+      }
+      lista.forEach((item) => {
+        const indexReal = meusItensPagos.findIndex(i => i.id === item.id);
+        grid.innerHTML += `
+          <div class="meu-item-card" onclick="abrirDetalhesItem(${indexReal})">
+            <img src="${item.foto}" class="meu-item-foto" alt="">
+            <div class="meu-item-nome">${item.titulo}</div>
+            <div style="font-size: 8px; color: var(--text-light); font-weight: 700; margin-bottom: 2px;">${item.sub}</div>
+            <span class="meu-item-tag tag-warehouse">${item.status}</span>
+            <span class="meu-item-tag tag-gom">${item.gom}</span>
+          </div>
+        `;
+      });
+    }
+
+    // ABRIR TELA DE MEUS ENVIOS
+    const abrirMeusEnvios = (e) => {
+      if(e) e.preventDefault();
+      esconderTodasAsTelas();
+      subMeusEnvios.style.display = 'flex';
+      renderizarMeusEnvios();
+      window.scrollTo(0, 0);
+    };
+
+    document.getElementById('link-meus-envios-sidebar').addEventListener('click', abrirMeusEnvios);
+
+    function renderizarMeusEnvios() {
+      const container = document.getElementById('lista-meus-envios-container');
+      if(!container) return;
+      container.innerHTML = "";
+
+      if(meusEnviosLista.length === 0) {
+        container.innerHTML = `<p style="font-size: 12px; color: var(--text-light); text-align: center; padding: 20px;">Nenhum envio em rota no momento.</p>`;
+        return;
+      }
+
+      meusEnviosLista.forEach(envio => {
+        container.innerHTML += `
+          <div class="envio-card-item">
+            <div class="envio-card-left">
+              <img src="${envio.foto}" class="envio-card-foto" alt="">
+              <div class="envio-card-info">
+                <div class="envio-card-titulo">${envio.titulo}</div>
+                <div class="envio-card-status"><span class="envio-status-bolinha"></span>Status: ${envio.status}</div>
+                <div class="envio-card-rastreio">Rastreio: <a href="https://www.linkcorreios.com.br/?id=${envio.rastreio}" target="_blank">${envio.rastreio}</a></div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    // GESTÃO DO FORMULÁRIO DE SOLICITAR ENVIO
+    const btnTriggerProof = document.getElementById('btn-trigger-proof');
+    const inputProofArmazem = document.getElementById('input-proof-armazem');
+    const textoProofSelecionado = document.getElementById('texto-proof-selecionado');
+    let arquivoProofAnexado = null;
+
+    if(btnTriggerProof) {
+      btnTriggerProof.addEventListener('click', () => inputProofArmazem.click());
+      inputProofArmazem.addEventListener('change', (e) => {
+        if(e.target.files.length > 0) {
+          arquivoProofAnexado = e.target.files[0];
+          textoProofSelecionado.innerHTML = `<span style="color: #2F3E53; font-weight: 800;">Arquivo anexado: ${arquivoProofAnexado.name}</span>`;
+        }
+      });
+    }
+
+    const formSolicitarEnvio = document.getElementById('form-solicitar-envio');
+    const modalEnvioSucesso = document.getElementById('modal-envio-sucesso');
+
+    if(formSolicitarEnvio) {
+      formSolicitarEnvio.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if(!arquivoProofAnexado) {
+          alert("Por favor, anexe o proof do armazém!");
+          return;
+        }
+
+        const dadosEnvio = {
+          clienteNome: dadosUsuarioAtual.nome,
+          clienteHandle: dadosUsuarioAtual.usuario,
+          nomeCompleto: document.getElementById('envio-nome').value,
+          cpf: document.getElementById('envio-cpf').value,
+          cep: document.getElementById('envio-cep').value,
+          rua: document.getElementById('envio-rua').value,
+          numero: document.getElementById('envio-numero').value,
+          bairro: document.getElementById('envio-bairro').value,
+          complemento: document.getElementById('envio-complemento').value,
+          cidade: document.getElementById('envio-cidade').value,
+          estado: document.getElementById('envio-estado').value,
+          gom: document.getElementById('envio-gom').value,
+          status: 'Pendente de Verificação',
+          dataEnvio: serverTimestamp()
+        };
+
+        try {
+          await addDoc(collection(db, "solicitacoesEnvio"), dadosEnvio);
+          if(modalEnvioSucesso) modalEnvioSucesso.style.display = 'flex';
+        } catch (err) {
+          console.error("Erro ao enviar formulário:", err);
+          alert("Erro ao enviar o formulário. Tente novamente.");
+        }
+      });
+    }
+
+    const btnModalEnvioOk = document.getElementById('btn-modal-envio-ok');
+    if(btnModalEnvioOk) {
+      btnModalEnvioOk.addEventListener('click', () => {
+        if(modalEnvioSucesso) modalEnvioSucesso.style.display = 'none';
+        location.reload();
+      });
+    }
+
+    // Busca na Loja Completa
+    const lojaSearchInput = document.getElementById('loja-search-input');
+    const btnFilterToggle = document.getElementById('btn-filter-toggle');
+    const filterDropdown = document.getElementById('filter-dropdown');
+
+    if(lojaSearchInput) {
+      lojaSearchInput.addEventListener('input', (e) => {
+        const termo = e.target.value.toLowerCase();
+        const catalogGrid = document.getElementById('loja-catalog-grid');
+        if(!catalogGrid) return;
+        catalogGrid.innerHTML = "";
+        const filtrados = produtosLoja.filter(prod => prod.titulo.toLowerCase().includes(termo) || prod.sub.toLowerCase().includes(termo));
+        
+        filtrados.forEach(prod => {
+          const pVal = Number(prod.preco).toFixed(2).split('.');
+          catalogGrid.innerHTML += `
+            <div class="loja-item">
+              <div class="loja-moldura-wrapper">
+                <div class="loja-foto-container"><img src="${prod.foto}" class="loja-foto"></div>
+                <img src="MOLDE_ITENS_A_VENDA.png" class="loja-mold-img">
+                <div class="loja-price"><span class="moeda">R$</span><span class="inteiro">${pVal[0]}</span><span class="centavos">,${pVal[1]}</span></div>
+                <div class="loja-title"><div class="nome">${prod.titulo}</div><div class="sub">${prod.sub}</div></div>
+                <div class="btn-add-cart-float" onclick="adicionarAoCarrinhoLoja('${prod.id}')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                </div>
+              </div>
+            </div>`;
+        });
+      });
+    }
+
+    if(btnFilterToggle && filterDropdown) {
+      btnFilterToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        filterDropdown.classList.toggle('active');
+      });
+      document.addEventListener('click', () => { filterDropdown.classList.remove('active'); });
+      filterDropdown.querySelectorAll('.filter-option').forEach(opt => {
+        opt.addEventListener('click', (e) => {
+          const grupo = e.target.getAttribute('data-grupo');
+          const catalogGrid = document.getElementById('loja-catalog-grid');
+          if(!catalogGrid) return;
+          catalogGrid.innerHTML = "";
+          const filtrados = grupo === 'TODOS' ? produtosLoja : produtosLoja.filter(p => p.grupo === grupo);
+          
+          filtrados.forEach(prod => {
+            const pVal = Number(prod.preco).toFixed(2).split('.');
+            catalogGrid.innerHTML += `
+              <div class="loja-item">
+                <div class="loja-moldura-wrapper">
+                  <div class="loja-foto-container"><img src="${prod.foto}" class="loja-foto"></div>
+                  <img src="MOLDE_ITENS_A_VENDA.png" class="loja-mold-img">
+                  <div class="loja-price"><span class="moeda">R$</span><span class="inteiro">${pVal[0]}</span><span class="centavos">,${pVal[1]}</span></div>
+                  <div class="loja-title"><div class="nome">${prod.titulo}</div><div class="sub">${prod.sub}</div></div>
+                  <div class="btn-add-cart-float" onclick="adicionarAoCarrinhoLoja('${prod.id}')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                  </div>
+                </div>
+              </div>`;
+          });
+        });
+      });
+    }
+
+    // ABRIR / FECHAR MODAL DE DETALHES DO ITEM
+    window.abrirDetalhesItem = function(index) {
+      const item = meusItensPagos[index];
+      if(!item) return;
+
+      document.getElementById('detalhes-modal-foto').src = item.foto;
+      document.getElementById('detalhes-modal-titulo').innerText = item.titulo;
+      document.getElementById('detalhes-modal-sub').innerText = item.sub;
+      document.getElementById('detalhes-modal-gom').innerText = item.gom.replace('GOM ', '');
+      document.getElementById('detalhes-modal-status').innerText = item.status;
+      document.getElementById('detalhes-modal-ceg').innerText = item.ceg || 'Pedidos individuais';
+      document.getElementById('detalhes-modal-caixa').innerText = item.caixa || 'Indefinida';
+
+      document.getElementById('modal-detalhes-item').style.display = 'flex';
+    };
+
+    document.getElementById('btn-fechar-detalhes').addEventListener('click', () => {
+      document.getElementById('modal-detalhes-item').style.display = 'none';
+    });
+
+    document.getElementById('menu-solicitar-envio').addEventListener('click', (e) => {
+      e.preventDefault();
+      esconderTodasAsTelas();
+      subSolicitarEnvio.style.display = 'flex';
+      if(document.getElementById('envio-nome')) {
+        document.getElementById('envio-nome').value = dadosUsuarioAtual.nome || '';
+      }
+      window.scrollTo(0, 0);
+    });
+
+    document.getElementById('menu-meus-emblemas').addEventListener('click', (e) => { e.preventDefault(); esconderTodasAsTelas(); subMeusEmblemas.style.display = 'flex'; window.scrollTo(0, 0); });
+
+    document.querySelectorAll('.btn-voltar-painel').forEach(btn => {
+      btn.addEventListener('click', (e) => { e.preventDefault(); location.reload(); });
+    });
+
+    const optPix = document.getElementById('opt-pix');
+    const optCredito = document.getElementById('opt-credito');
+    const blocoComprovantePix = document.getElementById('bloco-comprovante-pix');
+
+    if(optPix) optPix.addEventListener('click', () => { optPix.classList.add('selected'); optCredito.classList.remove('selected'); optPix.querySelector('input').checked = true; blocoComprovantePix.style.display = 'block'; });
+    if(optCredito) optCredito.addEventListener('click', () => { optCredito.classList.add('selected'); optPix.classList.remove('selected'); optCredito.querySelector('input').checked = true; blocoComprovantePix.style.display = 'none'; });
+
+    const btnAnexarComprovante = document.getElementById('btn-anexar-comprovante');
+    const inputArquivoComprovante = document.getElementById('input-arquivo-comprovante');
+    const textoNomeArquivo = document.getElementById('nome-arquivo-selecionado');
+
+    if(btnAnexarComprovante) {
+      btnAnexarComprovante.addEventListener('click', () => { inputArquivoComprovante.click(); });
+      inputArquivoComprovante.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+          let comprovanteFile = e.target.files[0];
+          textoNomeArquivo.innerText = comprovanteFile.name; 
+          textoNomeArquivo.style.color = '#2F3E53';
+        }
+      });
+    }
+
+    function renderizarCarrinho() {
+      const grid = document.getElementById('carrinho-itens-grid');
+      const totalSpan = document.getElementById('carrinho-valor-total');
+      if(!grid) return;
+      grid.innerHTML = "";
+      let totalGeral = 0;
+      if(carrinhoItens.length === 0) { grid.innerHTML = `<p style="color: #2F3E53; font-weight: 600; padding: 20px;">Seu carrinho está vazio.</p>`; }
+      carrinhoItens.forEach((item, index) => {
+        totalGeral += Number(item.preco || 0);
+        const precoFormatado = Number(item.preco).toFixed(2).split('.');
+        grid.innerHTML += `<div class="loja-item"><div class="loja-moldura-wrapper"><div class="loja-foto-container"><img src="${item.fotoUrl}" class="loja-foto"></div><img src="MOLDE_ITENS_A_VENDA.png" class="loja-mold-img"><div class="btn-remove-cart-float" onclick="removerDoCarrinho(${index})">✕</div><div class="loja-price"><span class="moeda">R$</span><span class="inteiro">${precoFormatado[0]}</span><span class="centavos">,${precoFormatado[1]}</span></div><div class="loja-title" style="bottom: 14.5%;"><div class="nome" style="font-size: 11px;">${item.titulo}</div><div class="sub" style="font-size: 8px;">${item.subtitulo}</div></div></div></div>`;
+      });
+      totalSpan.innerText = totalGeral.toFixed(2).replace('.', ',');
+    }
+    
+    window.removerDoCarrinho = function(index) {
+      const itemRemovido = carrinhoItens[index];
+      if(itemRemovido.idOriginal && itemRemovido.vendedoraOriginal) {
+        const listaVend = dadosPendencias[itemRemovido.vendedoraOriginal];
+        if(listaVend) {
+          const itemOriginal = listaVend.find(i => i.id === itemRemovido.idOriginal);
+          if(itemOriginal) {
+            itemOriginal.status = 'Pendente';
+          }
+        }
+      }
+      carrinhoItens.splice(index, 1);
+      renderizarCarrinho();
+      renderizarPainelPendencias();
+    };
+
+    const modalSucesso = document.getElementById('modal-sucesso');
+    const btnFinalizarCompra = document.getElementById('btn-finalizar-compra');
+
+    if(btnFinalizarCompra) {
+      btnFinalizarCompra.addEventListener('click', () => {
+        if(carrinhoItens.length === 0) { alert("O seu carrinho está vazio!"); return; }
+        btnFinalizarCompra.innerText = "Processando...";
+        btnFinalizarCompra.disabled = true;
+
+        setTimeout(() => {
+          btnFinalizarCompra.innerText = "Comprar";
+          btnFinalizarCompra.disabled = false;
+          modalSucesso.style.display = 'flex';
+        }, 1500);
+      });
+    }
+
+    const btnModalOk = document.getElementById('btn-modal-ok');
+    if(btnModalOk) {
+      btnModalOk.addEventListener('click', () => {
+        modalSucesso.style.display = 'none';
+        
+        carrinhoItens.forEach(item => {
+          if(item.idOriginal && item.vendedoraOriginal) {
+            dadosPendencias[item.vendedoraOriginal] = dadosPendencias[item.vendedoraOriginal].filter(i => i.id !== item.idOriginal);
+          }
+          meusItensPagos.push({
+            id: 'mi_' + Math.random(),
+            titulo: item.titulo,
+            sub: item.subtitulo || 'ITENS ADQUIRIDOS',
+            foto: item.fotoUrl || 'image_3595a6_2.jpg',
+            status: 'No warehouse',
+            gom: 'GOM ' + (item.vendedoraOriginal ? item.vendedoraOriginal.toUpperCase() : 'Staff'),
+            ceg: 'Pedidos individuais',
+            caixa: 'Indefinida'
+          });
+        });
+
+        carrinhoItens = [];
+        renderizarPainelPendencias();
+        voltarParaHome();
+      });
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        esconderTodasAsTelas();
+        dashboardContainer.style.display = "flex";
+        inicializarLoja();
+        try {
+          const coll = collection(db, "usuarios");
+          const snapshot = await getCountFromServer(coll);
+          document.getElementById("real-jelly-count").innerText = snapshot.data().count;
+          
+          const q = query(collection(db, "usuarios"), where("uid", "==", user.uid));
+          const querySnap = await getDocs(q);
+          if (!querySnap.empty) {
+            const docSnap = querySnap.docs[0];
+            usuarioLogadoDocId = docSnap.id;
+            const userData = docSnap.data();
+            
+            dadosUsuarioAtual.telefone = userData.telefone || '';
+            dadosUsuarioAtual.email = userData.email || user.email || '';
+            dadosUsuarioAtual.nome = userData.nome || "Gudugo";
+            dadosUsuarioAtual.usuario = userData.usuario || "@gudugodamas";
+
+            document.getElementById('sidebar-name').innerText = dadosUsuarioAtual.nome;
+            document.getElementById('sidebar-handle').innerText = dadosUsuarioAtual.usuario;
+            document.getElementById('painel-nome').innerText = dadosUsuarioAtual.nome;
+            document.getElementById('painel-handle').innerText = dadosUsuarioAtual.usuario;
+            document.getElementById('painel-titulo-boas-vindas').innerText = `Bem vinda de volta, ${dadosUsuarioAtual.nome}!`;
+
+            if(userData.avatar) {
+              document.getElementById('sidebar-avatar').src = userData.avatar;
+              document.getElementById('painel-avatar').src = userData.avatar;
+            }
+          }
+        } catch (err) { console.error(err); }
+      } else {
+        esconderTodasAsTelas();
+        authContainer.style.display = "flex";
+      }
+    });
+
+    document.querySelectorAll(".btn-logout").forEach(btn => {
+      btn.addEventListener("click", async (e) => {
+        e.preventDefault();
+        try { await signOut(auth); } catch (error) { console.error(error); }
+      });
+    });
+
+    const loginForm = document.getElementById("login-form");
+    const btnSubmitLogin = document.getElementById("btn-submit-login");
+    const loginError = document.getElementById("login-error");
+
+    if(loginForm) {
+      loginForm.email = "e-mail";
+      loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        loginError.style.display = 'none';
+        btnSubmitLogin.textContent = "A entrar..."; btnSubmitLogin.disabled = true;
+        try {
+          await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-password').value);
+          document.getElementById('login-password').value = '';
+        } catch (error) {
+          loginError.style.display = 'block'; 
+        } finally {
+          btnSubmitLogin.textContent = "Entrar →"; btnSubmitLogin.disabled = false;
+        }
+      });
+    }
+  </script>
+</body>
+</html>
