@@ -1737,7 +1737,6 @@
     const loginError = document.getElementById("login-error");
 
     if(loginForm) {
-      loginForm.email = "e-mail";
       loginForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         loginError.style.display = 'none';
@@ -1749,6 +1748,49 @@
           loginError.style.display = 'block'; 
         } finally {
           btnSubmitLogin.textContent = "Entrar →"; btnSubmitLogin.disabled = false;
+        }
+      });
+    }
+
+    // REGISTO DE UTILIZADOR CORRIGIDO COM FIREBASE AUTH
+    const registerForm = document.getElementById("register-form");
+    const btnSubmitRegister = document.getElementById("btn-submit-register");
+
+    if(registerForm) {
+      registerForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        
+        const nome = document.getElementById('reg-name').value;
+        const usuario = document.getElementById('reg-username').value;
+        const telefone = document.getElementById('reg-phone').value;
+        const email = document.getElementById('reg-email').value;
+        const password = document.getElementById('reg-password').value;
+        const codigoAcesso = document.getElementById('access-code').value.trim().toUpperCase();
+
+        btnSubmitRegister.textContent = "A criar conta...";
+        btnSubmitRegister.disabled = true;
+
+        try {
+          const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+          const user = userCredential.user;
+
+          await addDoc(collection(db, "usuarios"), {
+            uid: user.uid,
+            nome: nome,
+            usuario: usuario,
+            telefone: telefone,
+            email: email,
+            codigoAcesso: codigoAcesso,
+            dataRegisto: serverTimestamp()
+          });
+
+          alert("Conta criada com sucesso!");
+        } catch (error) {
+          console.error("Erro ao criar conta:", error);
+          alert("Erro ao criar conta: " + error.message);
+        } finally {
+          btnSubmitRegister.textContent = "Finalizar Cadastro";
+          btnSubmitRegister.disabled = false;
         }
       });
     }
